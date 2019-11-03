@@ -18,7 +18,7 @@ class MexBuiltInTypes:
     # Any Latin string
     MEX_TYPE_STR_EN = 'str-en'
     # Any Chinese string
-    MEX_TYPE_STR_CN = 'str-cn'
+    MEX_TYPE_STR_CN = 'str-zh-cn'
 
     #
     # Regex Constants

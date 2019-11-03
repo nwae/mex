@@ -36,6 +36,8 @@ import mex.MexBuiltInTypes as mexbuiltin
 #    - time (12:30:55, 23:59)
 #    - datetime (20190322 23:59:11, 2019-03-22 23:59, 2019-03-22)
 #    - email
+#    - str-en (any Latin string)
+#    - str-zh-cn (any simplified Chinese string)
 # <expression_x> is the word you expect to see before/after the parameter
 #
 class MatchExpression:
@@ -427,7 +429,7 @@ if __name__ == '__main__':
             'mex': 'dt, datetime,   ;   acc, number, 계정 & 번호   ;   '
                    + 'm, int, 월   ;   d, int, 일   ;   t, time, 에   ;'
                    + 'amt, float, 원   ;   bal, float, 잔액   ;'
-                   + 'name, str-cn, 】',
+                   + 'name, str-zh-cn, 】',
             'sentences': [
                 '2020-01-01: 번호 0011 계정은 9 월 23 일 10:12 에 1305.67 원, 잔액 9999.77.',
                 '20200101 xxx: 번호 0011 계정은 8 월 24 일 10:12 에 원 1305.67, 9999.77 잔액.',
