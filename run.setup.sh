@@ -28,6 +28,7 @@ rm -rf ./build/*
 
 # Create wheel
 $PYTHON src/setup.py bdist_wheel
+echo "[$SCRIPT_NAME] OK Created bdist_wheel."
 
 # Upload to pypi
 $PYTHON -m twine upload "dist/mex-$PIP_VERSION-py3-none-any.whl"

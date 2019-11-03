@@ -4,6 +4,7 @@ import nwae.utils.Log as lg
 from inspect import getframeinfo, currentframe
 import re
 import nwae.utils.StringUtils as su
+import mex.MexBuiltInTypes as mexbuiltin
 
 
 #
@@ -35,6 +36,8 @@ import nwae.utils.StringUtils as su
 #    - time (12:30:55, 23:59)
 #    - datetime (20190322 23:59:11, 2019-03-22 23:59, 2019-03-22)
 #    - email
+#    - str-en (any Latin string)
+#    - str-zh-cn (any simplified Chinese string)
 # <expression_x> is the word you expect to see before/after the parameter
 #
 class MatchExpression:
@@ -48,136 +51,15 @@ class MatchExpression:
     # Separates the names of a variable. e.g. 'mass&m'
     MEX_VAR_EXPRESSIONS_SEPARATOR = '&'
 
-    MEX_TYPE_FLOAT = 'float'
-    MEX_TYPE_INT = 'int'
-    # String format and will not remove leading 0's
-    MEX_TYPE_NUMBER = 'number'
-    # e.g. 10:12:36, 12:15
-    MEX_TYPE_TIME = 'time'
-
-    MEX_TYPE_DATETIME = 'datetime'
-    # e.g. me@gmail.com
-    MEX_TYPE_EMAIL = 'email'
-
-    #
-    # Regex Constants
-    #
-    USERNAME_CHARS = 'a-zA-Z0-9_.-'
-    # These characters need to be bracketed if found in mex expressions
-    COMMON_REGEX_CHARS = ('*', '+', '[', ']', '{', '}', '|')
-
-    TERM_LEFT = 'front'
-    TERM_RIGHT = 'back'
-    #
-    # Mapping of regular expressions to data type, you may pass in your custom one at constructor
-    #
-    MAP_VARTYPE_REGEX = {
-        MEX_TYPE_FLOAT: {
-            TERM_LEFT: [
-                # In front of variable expression
-                '.*[^0-9\-]+([+\-]*[0-9]+[.][0-9]*)',
-                # In front of variable expression at the start of sentence
-                '^([+\-]*[0-9]+[.][0-9]*)'
-            ],
-            TERM_RIGHT: [
-                # After or at the back of variable expression
-                '([+\-]*[0-9]+[.][0-9]*).*'
-            ]
-        },
-        MEX_TYPE_INT: {
-            TERM_LEFT: [
-                # In front of variable expression
-                '.*[^0-9\-]+([+\-]*[0-9]+)',
-                # In front of variable expression at the start of sentence
-                '^([+\-]*[0-9]+)'
-            ],
-            TERM_RIGHT: [
-                # After or at the back of variable expression
-                '([+\-]*[0-9]+).*'
-            ]
-        },
-        MEX_TYPE_NUMBER: {
-            TERM_LEFT: [
-                # In front of variable expression
-                '.*[^0-9\-]+([+\-]*[0-9]+)',
-                # In front of variable expression at the start of sentence
-                '^([+\-]*[0-9]+)'
-            ],
-            TERM_RIGHT: [
-                # After or at the back of variable expression
-                '([+\-]*[0-9]+).*'
-            ]
-        },
-        MEX_TYPE_TIME: {
-            TERM_LEFT: [
-                # HHMMSS. Check this first
-                # HHMMSS. In front of variable expression
-                '.*[^0-9]+([0-9]+[:][0-9]+[:][0-9]+)',
-                # HHMMSS. In front of variable expression at the start of sentence
-                '^([0-9]+[:][0-9]+[:][0-9]+)',
-                # HHMM. Check this only after checking HHMMSS
-                # HHMM. In front of variable expression
-                '.*[^0-9]+([0-9]+[:][0-9]+)',
-                # HHMM. In front of variable expression at the start of sentence
-                '^([0-9]+[:][0-9]+)',
-            ],
-            TERM_RIGHT: [
-                # HHMMSS. After or at the back of variable expression
-                '([0-9]+[:][0-9]+[:][0-9]+).*',
-                # HHMM. After or at the back of variable expression
-                '([0-9]+[:][0-9]+).*'
-            ]
-        },
-        MEX_TYPE_DATETIME: {
-            TERM_LEFT: [
-                # "yyyymmdd HHMMSS". Check this first
-                # HHMMSS. In front of variable expression
-                '.*[^0-9]+([0-9]{4}[-]*[0-1][0-9][-*][0-3][0-9][ ]+[0-9]+[:][0-9]+[:][0-9]+)',
-                # "yyyymmdd HHMMSS". In front of variable expression at the start of sentence
-                '^([0-9]{4}[-]*[0-1][0-9][-]*[0-3][0-9][ ]+[0-9]+[:][0-9]+[:][0-9]+)',
-                # "yyyymmdd HHMM". Check this only after checking "yyyymmdd HHMMSS"
-                # "yyyymmdd HHMM". In front of variable expression
-                '.*[^0-9]+([0-9]{4}[-]*[0-1][0-9][-]*[0-3][0-9][ ]+[0-9]+[:][0-9]+)',
-                # "yyyymmdd HHMM". In front of variable expression at the start of sentence
-                '^([0-9]{4}[-]*[0-1][0-9][-]*[0-3][0-9][ ]+[0-9]+[:][0-9]+)',
-                # "yyyymmdd". In front of variable expression
-                '.*[^0-9]+([0-9]{4}[-]*[0-1][0-9][-]*[0-3][0-9])',
-                # "yyyymmdd". In front of variable expression at the start of sentence
-                '^([0-9]{4}[-]*[0-1][0-9][-]*[0-3][0-9])',
-            ],
-            TERM_RIGHT: [
-                # "yyyymmdd HHMMSS". After or at the back of variable expression
-                '([0-9]{4}[-]*[0-1][0-9][-*][0-3][0-9][ ]+[0-9]+[:][0-9]+[:][0-9]+).*',
-                # "yyyymmdd HHMM". After or at the back of variable expression
-                '([0-9]{4}[-]*[0-1][0-9][-*][0-3][0-9][ ]+[0-9]+[:][0-9]+).*',
-                # "yyyymmdd"". After or at the back of variable expression
-                '([0-9]{4}[-]*[0-1][0-9][-*][0-3][0-9]).*',
-            ]
-        },
-        MEX_TYPE_EMAIL: {
-            TERM_LEFT: [
-                # In front of variable expression
-                '.*[^' + USERNAME_CHARS + ']+' + '([' + USERNAME_CHARS + ']+' + '[@][a-zA-Z0-9]+[.][a-zA-Z]+)',
-                # In front of variable expression at the start of sentence
-                '^([' + USERNAME_CHARS + ']+' + '[@][a-zA-Z0-9]+[.][a-zA-Z]+)'
-            ],
-            TERM_RIGHT: [
-                # After or at the back of variable expression
-                # Note that if given math expressions are nothing or '', then
-                # 'email@x.com' will be returned correctly on the left side but
-                # the right side will return 'l@x.com'.
-                # The user needs to choose the right one
-                '([' + USERNAME_CHARS + ']+' + '[@][a-zA-Z0-9]+[.][a-zA-Z]+).*'
-            ]
-        }
-    }
+    TERM_LEFT = mexbuiltin.MexBuiltInTypes.TERM_LEFT
+    TERM_RIGHT = mexbuiltin.MexBuiltInTypes.TERM_RIGHT
 
     def __init__(
             self,
             pattern,
             sentence,
-            map_vartype_to_regex=MAP_VARTYPE_REGEX,
-            case_sensitive=False
+            map_vartype_to_regex = None,
+            case_sensitive       = False
     ):
         self.pattern = pattern
         self.sentence = sentence
@@ -185,6 +67,12 @@ class MatchExpression:
         if not self.case_sensitive:
             self.sentence = str(self.sentence).lower()
         self.map_vartype_to_regex = map_vartype_to_regex
+        if self.map_vartype_to_regex is None:
+            self.map_vartype_to_regex = mexbuiltin.MexBuiltInTypes.get_mex_built_in_types()
+            lg.Log.info(
+                str(self.__class__) + ' ' + str(getframeinfo(currentframe()).lineno)
+                + ': Using default mex built-in types'
+            )
         lg.Log.debug(
             str(self.__class__) + ' ' + str(getframeinfo(currentframe()).lineno) \
             + ': Pattern "' + str(self.pattern)
@@ -258,7 +146,7 @@ class MatchExpression:
                     expression = su.StringUtils.trim(expression)
                     corrected_expression = ''
                     for i in range(len(expression)):
-                        if expression[i] in MatchExpression.COMMON_REGEX_CHARS:
+                        if expression[i] in mexbuiltin.MexBuiltInTypes.COMMON_REGEX_CHARS:
                             corrected_expression = corrected_expression + '[' + expression[i] + ']'
                         else:
                             corrected_expression = corrected_expression + expression[i]
@@ -329,13 +217,13 @@ class MatchExpression:
                 try:
                     if data_type not in self.map_vartype_to_regex.keys():
                         raise Exception('Unrecognized type "' + str(data_type) + '".')
-                    elif data_type == MatchExpression.MEX_TYPE_INT:
+                    elif data_type == mexbuiltin.MexBuiltInTypes.MEX_TYPE_INT:
                         if value_left:
                             value_left = int(value_left)
                         if value_right:
                             value_right = int(value_right)
                         var_values[var] = (value_left, value_right)
-                    elif data_type == MatchExpression.MEX_TYPE_FLOAT:
+                    elif data_type == mexbuiltin.MexBuiltInTypes.MEX_TYPE_FLOAT:
                         if value_left:
                             value_left = float(value_left)
                         if value_right:
@@ -540,7 +428,8 @@ if __name__ == '__main__':
         {
             'mex': 'dt, datetime,   ;   acc, number, 계정 & 번호   ;   '
                    + 'm, int, 월   ;   d, int, 일   ;   t, time, 에   ;'
-                   + 'amt, float, 원   ;   bal, float, 잔액   ',
+                   + 'amt, float, 원   ;   bal, float, 잔액   ;'
+                   + 'name, str-zh-cn, 】',
             'sentences': [
                 '2020-01-01: 번호 0011 계정은 9 월 23 일 10:12 에 1305.67 원, 잔액 9999.77.',
                 '20200101 xxx: 번호 0011 계정은 8 월 24 일 10:12 에 원 1305.67, 9999.77 잔액.',
@@ -549,7 +438,10 @@ if __name__ == '__main__':
                 '2020-01-01: 번호 0044 계정은 5 월 27 일 完成23:24:55 에 5501.99 원, 잔액 6666.77.',
                 '2020-01-01: 번호0055계정은4월28일11:37에1111.22원，잔액5555.77.',
                 '2020-01-01: 번호0066계정은3월29일11:37:55에2222.33원，잔액4444.77',
-                '2020-01-01: 번호0777계정은30일 完成11:38:55에3333.44원'
+                '2020-01-01: 번호0777계정은30일 完成11:38:55에3333.44원',
+                '【은행】 陈豪贤于.',
+                'xxx 陈豪贤 】 于.',
+                '陈豪贤 】 于.',
             ]
         }
     ]
