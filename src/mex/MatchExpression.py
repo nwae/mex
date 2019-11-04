@@ -514,6 +514,8 @@ if __name__ == '__main__':
         }
     ]
 
+    import nwae.utils.Profiling as prf
+
     for test in tests:
         pattern = test['mex']
         sentences = test['sentences']
@@ -524,6 +526,7 @@ if __name__ == '__main__':
         for i in range(len(sentences)):
             sent = sentences[i]
 
+            a = prf.Profiling.start()
             cmobj = MatchExpression(
                 pattern=pattern,
                 sentence=sent
@@ -531,9 +534,12 @@ if __name__ == '__main__':
             params_all = cmobj.get_params(
                 return_one_value = False
             )
+            print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
             # print(params_all)
 
+            a = prf.Profiling.start()
             params_one = cmobj.get_params(
                 return_one_value = True
             )
             print(params_one)
+            print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
