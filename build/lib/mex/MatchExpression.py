@@ -49,7 +49,7 @@ class MatchExpression:
     # Separates the description of the same variable. e.g. 'm,float,mass&m'
     MEX_VAR_DESCRIPTION_SEPARATOR = ','
     # Separates the names of a variable. e.g. 'mass&m'
-    MEX_VAR_EXPRESSIONS_SEPARATOR = '&'
+    MEX_VAR_EXPRESSIONS_SEPARATOR = '/'
 
     TERM_LEFT = mexbuiltin.MexBuiltInTypes.TERM_LEFT
     TERM_RIGHT = mexbuiltin.MexBuiltInTypes.TERM_RIGHT
@@ -394,8 +394,8 @@ if __name__ == '__main__':
             # but works because we escape the word using '\\;')
             # to detect diameter.
             # Need to escape special mex characters like ; if used as expression
-            'mex': 'r, float, radius & r  ;'
-                   + 'd, float, diameter & d & test\\&escape & \\; & + & * &\\&   ;   ',
+            'mex': 'r, float, radius / r  ;'
+                   + 'd, float, diameter / d / test\\/escape / \\; / + / * /\\/   ;   ',
             'sentences': [
                 'What is the volume of a sphere of radius 5.88?',
                 'What is the volume of a sphere of radius 5.88 and 4.9 diameter?',
@@ -412,11 +412,11 @@ if __name__ == '__main__':
                 # separator, we allow this and the diameter will be detected
                 'What is the volume of a sphere of radius 5.88 and 33.88?',
                 # Should not be able to detect now diameter
-                'What is the volume of a sphere of radius 5.88 & 33.88?'
+                'What is the volume of a sphere of radius 5.88 / 33.88?'
             ]
         },
         {
-            'mex': 'dt,datetime,   ;   email,email,   ;   inc, float, inc & inch & inches',
+            'mex': 'dt,datetime,   ;   email,email,   ;   inc, float, inc / inch / inches',
             'sentences': [
                 'What is -2.6 inches? 20190322 05:15 send to me@abc.com.',
                 'What is +1.2 inches? 2019-03-22 05:15 you@email.ua ?',
@@ -426,7 +426,7 @@ if __name__ == '__main__':
             ]
         },
         {
-            'mex': 'dt, datetime,   ;   acc, number, 계정 & 번호   ;   '
+            'mex': 'dt, datetime,   ;   acc, number, 계정 / 번호   ;   '
                    + 'm, int, 월   ;   d, int, 일   ;   t, time, 에   ;'
                    + 'amt, float, 원   ;   bal, float, 잔액   ;'
                    + 'name, str-zh-cn, 】',
