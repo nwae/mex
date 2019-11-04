@@ -534,7 +534,7 @@ if __name__ == '__main__':
             params_all = cmobj.get_params(
                 return_one_value = False
             )
-            print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
+            #print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
             # print(params_all)
 
             a = prf.Profiling.start()
@@ -542,4 +542,11 @@ if __name__ == '__main__':
                 return_one_value = True
             )
             print(params_one)
-            print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
+            #print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
+
+    lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
+    print(MatchExpression(
+        pattern = 'mth,int,月;day,int,日;t,time,完成;amt, float, 民币;bal,float,金额',
+        sentence = '【中国农业银行】您尾号0579账户10月17日09:27完成代付交易人民币2309.95，余额2932.80。'
+    ).get_params(return_one_value = True)
+    )
