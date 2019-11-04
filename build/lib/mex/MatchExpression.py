@@ -48,8 +48,8 @@ class MatchExpression:
     MEX_VAR_DEFINITION_SEPARATOR = ';'
     # Separates the description of the same variable. e.g. 'm,float,mass&m'
     MEX_VAR_DESCRIPTION_SEPARATOR = ','
-    # Separates the names of a variable. e.g. 'mass&m'
-    MEX_VAR_EXPRESSIONS_SEPARATOR = '/'
+    # Separates the names of a variable. e.g. 'mass / m'. Accept either '/' or '&'
+    MEX_VAR_EXPRESSIONS_SEPARATORS = ['/','&']
 
     TERM_LEFT = mexbuiltin.MexBuiltInTypes.TERM_LEFT
     TERM_RIGHT = mexbuiltin.MexBuiltInTypes.TERM_RIGHT
@@ -135,10 +135,16 @@ class MatchExpression:
                 part_var_type = su.StringUtils.trim(var_desc[1])
                 part_var_expressions = su.StringUtils.trim(var_desc[2])
 
-                expressions_arr = su.StringUtils.split(
-                    string=part_var_expressions,
-                    split_word=MatchExpression.MEX_VAR_EXPRESSIONS_SEPARATOR
-                )
+                # We try to split by several
+                expressions_arr = None
+                for exp_sep in MatchExpression.MEX_VAR_EXPRESSIONS_SEPARATORS:
+                    expressions_arr = su.StringUtils.split(
+                        string = part_var_expressions,
+                        split_word = exp_sep
+                    )
+                    if len(expressions_arr) > 1:
+                        break
+
                 corrected_expressions_arr = []
                 # Bracket characters that are common regex key characters,
                 # as they are inserted into regex later on
@@ -394,7 +400,7 @@ if __name__ == '__main__':
             # but works because we escape the word using '\\;')
             # to detect diameter.
             # Need to escape special mex characters like ; if used as expression
-            'mex': 'r, float, radius / r  ;'
+            'mex': 'r, float, radius & r  ;'
                    + 'd, float, diameter / d / test\\/escape / \\; / + / * /\\/   ;   ',
             'sentences': [
                 'What is the volume of a sphere of radius 5.88?',
