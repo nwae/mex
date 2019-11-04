@@ -19,6 +19,12 @@ class MexBuiltInTypes:
     MEX_TYPE_STR_EN = 'str-en'
     # Any Chinese string
     MEX_TYPE_STR_CN = 'str-zh-cn'
+    # Any Hangul string
+    MEX_TYPE_STR_KO = 'str-ko'
+    # Any Thai string
+    MEX_TYPE_STR_TH = 'str-th'
+    # Any Vietnamese string
+    MEX_TYPE_STR_VI = 'str-vi'
 
     #
     # Regex Constants
@@ -26,6 +32,8 @@ class MexBuiltInTypes:
     USERNAME_CHARS = 'a-zA-Z0-9_.-'
     # These characters need to be bracketed if found in mex expressions
     COMMON_REGEX_CHARS = ('*', '+', '[', ']', '{', '}', '|')
+    CHARS_VIETNAMESE_LOWER = 'ăâàằầảẳẩãẵẫáắấạặậêèềẻểẽễéếẹệìỉĩíịôơòồờỏổởõỗỡóốớọộợưùừủửũữúứụựđ'
+    CHARS_VIETNAMESE = CHARS_VIETNAMESE_LOWER + CHARS_VIETNAMESE_LOWER.upper()
 
     TERM_LEFT = 'left'
     TERM_RIGHT = 'right'
@@ -157,7 +165,43 @@ class MexBuiltInTypes:
                     # Right of variable expression
                     '([\u4e00-\u9fff]+).*'
                 ]
-            }
+            },
+            MexBuiltInTypes.MEX_TYPE_STR_KO: {
+                MexBuiltInTypes.TERM_LEFT: [
+                    # Left of variable expression
+                    '.*[^\u1100-\u11ff\uac00-\ud7af]+([\u1100-\u11ff\uac00-\ud7af]+)',
+                    # Left of variable expression at the start of sentence
+                    '^([\u1100-\u11ff\uac00-\ud7af]+)'
+                ],
+                MexBuiltInTypes.TERM_RIGHT: [
+                    # Right of variable expression
+                    '([\u1100-\u11ff\uac00-\ud7af]+).*'
+                ]
+            },
+            MexBuiltInTypes.MEX_TYPE_STR_TH: {
+                MexBuiltInTypes.TERM_LEFT: [
+                    # Left of variable expression
+                    '.*[^\u0e00-\u0e5b]+([\u0e00-\u0e5b]+)',
+                    # Left of variable expression at the start of sentence
+                    '^([\u0e00-\u0e5b]+)'
+                ],
+                MexBuiltInTypes.TERM_RIGHT: [
+                    # Right of variable expression
+                    '([\u0e00-\u0e5b]+).*'
+                ]
+            },
+            MexBuiltInTypes.MEX_TYPE_STR_VI: {
+                MexBuiltInTypes.TERM_LEFT: [
+                    # Left of variable expression
+                    '.*[^a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE + ']+([a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE + ']+)',
+                    # Left of variable expression at the start of sentence
+                    '^([a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE + ']+)'
+                ],
+                MexBuiltInTypes.TERM_RIGHT: [
+                    # Right of variable expression
+                    '([a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE + ']+).*'
+                ]
+            },
         }
 
     def __init__(self):
