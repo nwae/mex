@@ -5,6 +5,7 @@ from inspect import getframeinfo, currentframe
 import re
 import nwae.utils.StringUtils as su
 import mex.MexBuiltInTypes as mexbuiltin
+import pandas as pd
 
 
 #
@@ -21,12 +22,13 @@ import mex.MexBuiltInTypes as mexbuiltin
 # Language
 #   var_1;var_2;var_3;..
 # where
-#   var_x = <var_name>,<var_type>,<expression_1>&<expression_2>&...
+#   var_x = <var_name>, <var_type>, <expression_1> / <expression_2> / ..., <direction>
 #
 # In human level, the above says, "Please extract variable x using <var_name>
 # (e.g. email, date, and this variable is of type <var_type> (e.g. float, email,
 # time") and expect a person to type words "<expression_1>" or "<expression_2>"...
-# when presenting this parameter"
+# when presenting this parameter". Preferred direction is <direction> (left or right),
+# default is left.
 #
 # <var_name> can be anything but must be unique among the variables
 # <var_type> can be
@@ -38,11 +40,15 @@ import mex.MexBuiltInTypes as mexbuiltin
 #    - email
 #    - str-en (any Latin string)
 #    - str-zh-cn (any simplified Chinese string)
+#    - str-ko (any Hangul string)
+#    - str-th (any Thai string)
+#    - str-vi (any Vietnamese string)
 # <expression_x> is the word you expect to see before/after the parameter
 #
 class MatchExpression:
     MEX_OBJECT_VARS_TYPE = 'type'
     MEX_OBJECT_VARS_EXPRESIONS = 'expressions'
+    MEX_OBJECT_VARS_DIRECTION = 'direction'
 
     # Separates the different variables definition. e.g. 'm,float,mass&m;c,float,light&speed'
     MEX_VAR_DEFINITION_SEPARATOR = ';'
@@ -134,16 +140,49 @@ class MatchExpression:
                 part_var_id = su.StringUtils.trim(var_desc[0])
                 part_var_type = su.StringUtils.trim(var_desc[1])
                 part_var_expressions = su.StringUtils.trim(var_desc[2])
+                part_var_direction = MatchExpression.TERM_LEFT
+                if len(var_desc) >= 4:
+                    part_var_direction = su.StringUtils.trim(var_desc[3]).lower()
 
                 # We try to split by several
-                expressions_arr = None
+                expressions_arr_raw = None
                 for exp_sep in MatchExpression.MEX_VAR_EXPRESSIONS_SEPARATORS:
-                    expressions_arr = su.StringUtils.split(
+                    expressions_arr_raw = su.StringUtils.split(
                         string = part_var_expressions,
                         split_word = exp_sep
                     )
-                    if len(expressions_arr) > 1:
+                    if len(expressions_arr_raw) > 1:
                         break
+
+                len_expressions_arr_raw = []
+                for i in range(len(expressions_arr_raw)):
+                    len_expressions_arr_raw.append(len(expressions_arr_raw[i]))
+
+                #
+                # Now we need to sort by longest to shortest.
+                # Longer names come first
+                # If we had put instead "이름 / 이름은", instead of detecting "김미소", it would return "은" instead
+                # 'mex': 'kotext, str-ko, 이름은 / 이름   ;'
+                #
+                expressions_arr = expressions_arr_raw
+                if len(expressions_arr_raw) > 1:
+                    try:
+                        df_expressions = pd.DataFrame({
+                            'expression': expressions_arr_raw,
+                            'len': len_expressions_arr_raw
+                        })
+                        df_expressions = df_expressions.sort_values(by=['len'], ascending=False)
+                        expressions_arr = df_expressions['expression'].tolist()
+                        lg.Log.debug(
+                            str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno) \
+                            + ': Sorted ' + str(expressions_arr_raw) + ' to ' + str(expressions_arr)
+                        )
+                    except Exception as ex_sort:
+                        lg.Log.error(
+                            ': Failed to sort ' + str(expressions_arr_raw) + ', len arr ' + str(len_expressions_arr_raw)
+                            + '. Exception ' + str(ex_sort) + '.'
+                        )
+                        expressions_arr = expressions_arr_raw
 
                 corrected_expressions_arr = []
                 # Bracket characters that are common regex key characters,
@@ -151,6 +190,11 @@ class MatchExpression:
                 for expression in expressions_arr:
                     expression = su.StringUtils.trim(expression)
                     corrected_expression = ''
+                    #
+                    # We now need to escape common characters found in regex patterns
+                    # if found in the expression. So that when inserted into regex patterns,
+                    # the expression will retain itself.
+                    #
                     for i in range(len(expression)):
                         if expression[i] in mexbuiltin.MexBuiltInTypes.COMMON_REGEX_CHARS:
                             corrected_expression = corrected_expression + '[' + expression[i] + ']'
@@ -159,10 +203,12 @@ class MatchExpression:
                     corrected_expressions_arr.append(corrected_expression)
 
                 var_encoding[part_var_id] = {
-                    # Extract 'float' from ['m','float','mass&m']
+                    # Extract 'float' from ['m','float','mass / m','left']
                     MatchExpression.MEX_OBJECT_VARS_TYPE: part_var_type,
-                    # Extract ['mass','m'] from 'mass&m'
-                    MatchExpression.MEX_OBJECT_VARS_EXPRESIONS: corrected_expressions_arr
+                    # Extract ['mass','m'] from 'mass / m'
+                    MatchExpression.MEX_OBJECT_VARS_EXPRESIONS: corrected_expressions_arr,
+                    # Extract 'left'
+                    MatchExpression.MEX_OBJECT_VARS_DIRECTION: part_var_direction
                 }
                 lg.Log.info(
                     str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno) \
@@ -203,16 +249,16 @@ class MatchExpression:
             # TODO Make this more intelligent
             #
             value_left = self.get_var_value(
-                var_name=var,
-                var_expressions=var_expressions,
-                data_type=data_type,
-                left_or_right=MatchExpression.TERM_LEFT
+                var_name        = var,
+                var_expressions = var_expressions,
+                data_type       = data_type,
+                left_or_right   = MatchExpression.TERM_LEFT
             )
             value_right = self.get_var_value(
-                var_name=var,
-                var_expressions=var_expressions,
-                data_type=data_type,
-                left_or_right=MatchExpression.TERM_RIGHT
+                var_name        = var,
+                var_expressions = var_expressions,
+                data_type       = data_type,
+                left_or_right   = MatchExpression.TERM_RIGHT
             )
 
             if value_left or value_right:
@@ -363,8 +409,7 @@ class MatchExpression:
 
     def get_params(
             self,
-            return_one_value=True,
-            return_value_priority=TERM_LEFT
+            return_one_value = True
     ):
         #
         # Extract variables from question
@@ -372,17 +417,19 @@ class MatchExpression:
         params_dict = self.extract_variable_values()
 
         if return_one_value:
-            for key in params_dict.keys():
-                values = params_dict[key]
+            for var in params_dict.keys():
+                values = params_dict[var]
+                preferred_direction = self.mex_obj_vars[var][MatchExpression.MEX_OBJECT_VARS_DIRECTION]
+
                 index_priority_order = (0, 1)
-                if return_value_priority == MatchExpression.TERM_RIGHT:
+                if preferred_direction == MatchExpression.TERM_RIGHT:
                     index_priority_order = (1, 0)
                 if values[index_priority_order[0]] is not None:
-                    params_dict[key] = values[index_priority_order[0]]
+                    params_dict[var] = values[index_priority_order[0]]
                 elif values[index_priority_order[1]] is not None:
-                    params_dict[key] = values[index_priority_order[1]]
+                    params_dict[var] = values[index_priority_order[1]]
                 else:
-                    params_dict[key] = None
+                    params_dict[var] = None
 
         return params_dict
 
@@ -435,7 +482,7 @@ if __name__ == '__main__':
             'mex': 'dt, datetime,   ;   acc, number, 계정 / 번호   ;   '
                    + 'm, int, 월   ;   d, int, 일   ;   t, time, 에   ;'
                    + 'amt, float, 원   ;   bal, float, 잔액   ;'
-                   + 'name, str-zh-cn, 】',
+                   + 'name, str-zh-cn, 】 ',
             'sentences': [
                 '2020-01-01: 번호 0011 계정은 9 월 23 일 10:12 에 1305.67 원, 잔액 9999.77.',
                 '20200101 xxx: 번호 0011 계정은 8 월 24 일 10:12 에 원 1305.67, 9999.77 잔액.',
@@ -449,26 +496,44 @@ if __name__ == '__main__':
                 'xxx 陈豪贤 】 于.',
                 '陈豪贤 】 于.',
             ]
+        },
+        {
+            # Longer names come first
+            # If we had put instead "이름 / 이름은", instead of detecting "김미소", it would return "은" instead
+            # But because we do internal sorting already, this won't happen
+            'mex': 'kotext, str-ko, 이름 / 이름은   ;'
+                   + 'thtext, str-th, ชื่อ   ;'
+                   + 'vitext, str-vi, tên   ;'
+                   + 'cntext, str-zh-cn, 名字 / 名 / 叫 / 我叫, right',
+            'sentences': [
+                '이름은 김미소 ชื่อ กุ้ง tên yêu ... 我叫习近平。'
+            ],
+            'priority_direction': [
+                'right'
+            ]
         }
     ]
 
     for test in tests:
         pattern = test['mex']
         sentences = test['sentences']
+        return_value_priorities = [MatchExpression.TERM_LEFT]*len(sentences)
+        if 'priority_direction' in test.keys():
+            return_value_priority = test['priority_direction']
 
-        for sent in sentences:
+        for i in range(len(sentences)):
+            sent = sentences[i]
+
             cmobj = MatchExpression(
                 pattern=pattern,
                 sentence=sent
             )
             params_all = cmobj.get_params(
-                return_one_value=False,
-                return_value_priority=MatchExpression.TERM_LEFT
+                return_one_value = False
             )
             # print(params_all)
 
             params_one = cmobj.get_params(
-                return_one_value=True,
-                return_value_priority=MatchExpression.TERM_LEFT
+                return_one_value = True
             )
             print(params_one)
