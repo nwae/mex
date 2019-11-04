@@ -48,7 +48,7 @@ import pandas as pd
 class MatchExpression:
     MEX_OBJECT_VARS_TYPE = 'type'
     MEX_OBJECT_VARS_EXPRESIONS = 'expressions'
-    MEX_OBJECT_VARS_DIRECTION = 'direction'
+    MEX_OBJECT_VARS_PREFERRED_DIRECTION = 'preferred_direction'
 
     # Separates the different variables definition. e.g. 'm,float,mass&m;c,float,light&speed'
     MEX_VAR_DEFINITION_SEPARATOR = ';'
@@ -116,8 +116,8 @@ class MatchExpression:
             # Use our own split function that will ignore escaped built-in separator
             # Here we split "m,float,mass&m;c,float,light&speed" into ['m,float,mass&m', 'c,float,light&speed']
             str_encoding = su.StringUtils.split(
-                string=self.pattern,
-                split_word=MatchExpression.MEX_VAR_DEFINITION_SEPARATOR
+                string     = self.pattern,
+                split_word = MatchExpression.MEX_VAR_DEFINITION_SEPARATOR
             )
             for unit_mex_pattern in str_encoding:
                 unit_mex_pattern = su.StringUtils.trim(unit_mex_pattern)
@@ -126,8 +126,8 @@ class MatchExpression:
                 # Use our own split function that will ignore escaped built-in separator
                 # Here we split 'm,float,mass&m' into ['m','float','mass&m']
                 var_desc = su.StringUtils.split(
-                    string=unit_mex_pattern,
-                    split_word=MatchExpression.MEX_VAR_DESCRIPTION_SEPARATOR
+                    string     = unit_mex_pattern,
+                    split_word = MatchExpression.MEX_VAR_DESCRIPTION_SEPARATOR
                 )
 
                 if len(var_desc) < 3:
@@ -140,9 +140,9 @@ class MatchExpression:
                 part_var_id = su.StringUtils.trim(var_desc[0])
                 part_var_type = su.StringUtils.trim(var_desc[1])
                 part_var_expressions = su.StringUtils.trim(var_desc[2])
-                part_var_direction = MatchExpression.TERM_LEFT
+                part_var_preferred_direction = MatchExpression.TERM_LEFT
                 if len(var_desc) >= 4:
-                    part_var_direction = su.StringUtils.trim(var_desc[3]).lower()
+                    part_var_preferred_direction = su.StringUtils.trim(var_desc[3]).lower()
 
                 # We try to split by several
                 expressions_arr_raw = None
@@ -208,7 +208,7 @@ class MatchExpression:
                     # Extract ['mass','m'] from 'mass / m'
                     MatchExpression.MEX_OBJECT_VARS_EXPRESIONS: corrected_expressions_arr,
                     # Extract 'left'
-                    MatchExpression.MEX_OBJECT_VARS_DIRECTION: part_var_direction
+                    MatchExpression.MEX_OBJECT_VARS_PREFERRED_DIRECTION: part_var_preferred_direction
                 }
                 lg.Log.info(
                     str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno) \
@@ -419,7 +419,7 @@ class MatchExpression:
         if return_one_value:
             for var in params_dict.keys():
                 values = params_dict[var]
-                preferred_direction = self.mex_obj_vars[var][MatchExpression.MEX_OBJECT_VARS_DIRECTION]
+                preferred_direction = self.mex_obj_vars[var][MatchExpression.MEX_OBJECT_VARS_PREFERRED_DIRECTION]
 
                 index_priority_order = (0, 1)
                 if preferred_direction == MatchExpression.TERM_RIGHT:
@@ -544,6 +544,7 @@ if __name__ == '__main__':
             print(params_one)
             #print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
 
+    exit(0)
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
     print(MatchExpression(
         pattern = 'mth,int,月;day,int,日;t,time,完成;amt, float, 民币;bal,float,金额',
