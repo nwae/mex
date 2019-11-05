@@ -369,11 +369,22 @@ class MatchExpression:
     ):
         var_expressions = var_expressions.lower()
 
+        #
+        # If no expressions are specified, then there is no need to match
+        # the right side, as we are only looking for the regex, and this is
+        # handled correctly on the left side but not on the right side.
+        # For example if we are looking for an email 'email@gmail.com', the
+        # right side will return only 'l@gmail.com'
+        #
+        if left_or_right == MatchExpression.TERM_RIGHT:
+            if var_expressions == '':
+                return None
+
         try:
             patterns_list = self.get_pattern_list(
-                data_type=data_type,
-                var_expressions=var_expressions,
-                left_or_right=left_or_right
+                data_type       = data_type,
+                var_expressions = var_expressions,
+                left_or_right   = left_or_right
             )
         except Exception as ex:
             errmsg = str(MatchExpression.__class__) + ' ' + str(getframeinfo(currentframe()).lineno) \
@@ -531,17 +542,11 @@ if __name__ == '__main__':
                 pattern=pattern,
                 sentence=sent
             )
-            params_all = cmobj.get_params(
+            #a = prf.Profiling.start()
+            params = cmobj.get_params(
                 return_one_value = False
             )
-            #print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
-            # print(params_all)
-
-            a = prf.Profiling.start()
-            params_one = cmobj.get_params(
-                return_one_value = True
-            )
-            print(params_one)
+            print(params)
             #print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
 
     exit(0)
