@@ -63,15 +63,11 @@ class MatchExpression:
     def __init__(
             self,
             pattern,
-            sentence,
             map_vartype_to_regex = None,
             case_sensitive       = False
     ):
         self.pattern = pattern
-        self.sentence = sentence
         self.case_sensitive = case_sensitive
-        if not self.case_sensitive:
-            self.sentence = str(self.sentence).lower()
         self.map_vartype_to_regex = map_vartype_to_regex
         if self.map_vartype_to_regex is None:
             self.map_vartype_to_regex = mexbuiltin.MexBuiltInTypes.get_mex_built_in_types()
@@ -81,8 +77,7 @@ class MatchExpression:
             )
         lg.Log.debug(
             str(self.__class__) + ' ' + str(getframeinfo(currentframe()).lineno) \
-            + ': Pattern "' + str(self.pattern)
-            + '" sentence "' + str(self.sentence) + '".'
+            + ': Pattern "' + str(self.pattern) + '".'
         )
         #
         # Decode the model variables
@@ -227,11 +222,12 @@ class MatchExpression:
     # Extract variables from string
     #
     def extract_variable_values(
-            self
+            self,
+            sentence
     ):
         lg.Log.debug(
             str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno) \
-            + ': Extracting vars from "' + str(self.sentence) + '", using mex encoding ' + str(self.mex_obj_vars)
+            + ': Extracting vars from "' + str(sentence) + '", using mex encoding ' + str(self.mex_obj_vars)
         )
 
         var_values = {}
@@ -249,12 +245,14 @@ class MatchExpression:
             # TODO Make this more intelligent
             #
             value_left = self.get_var_value(
+                sentence        = sentence,
                 var_name        = var,
                 var_expressions = var_expressions,
                 data_type       = data_type,
                 left_or_right   = MatchExpression.TERM_LEFT
             )
             value_right = self.get_var_value(
+                sentence        = sentence,
                 var_name        = var,
                 var_expressions = var_expressions,
                 data_type       = data_type,
@@ -290,19 +288,20 @@ class MatchExpression:
                 except Exception as ex_int_conv:
                     errmsg = str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno) \
                              + ': Failed to extract variable "' + str(var) \
-                             + '" from sentence "' + str(self.sentence) \
+                             + '" from sentence "' + str(sentence) \
                              + '". Exception ' + str(ex_int_conv) + '.'
                     lg.Log.warning(errmsg)
 
         lg.Log.debug(
             str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno) \
-            + ': For sentence "' + str(self.sentence) + '" var values ' + str(var_values)
+            + ': For sentence "' + str(sentence) + '" var values ' + str(var_values)
         )
 
         return var_values
 
     def get_var_value_regex(
             self,
+            sentence,
             patterns_list,
             var_name
     ):
@@ -314,13 +313,13 @@ class MatchExpression:
         if patterns_list is None:
             lg.Log.error(
                 str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno) \
-                + ': No patterns list provided for string "' + str(self.sentence)
+                + ': No patterns list provided for string "' + str(sentence)
                 + '", var name "' + str(var_name) + '".'
             )
             return None
 
         for pattern in patterns_list:
-            m = re.match(pattern=pattern, string=self.sentence)
+            m = re.match(pattern=pattern, string=sentence)
             if m:
                 lg.Log.debug(
                     str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno) \
@@ -362,6 +361,7 @@ class MatchExpression:
 
     def get_var_value(
             self,
+            sentence,
             var_name,
             var_expressions,
             data_type,
@@ -390,15 +390,15 @@ class MatchExpression:
             errmsg = str(MatchExpression.__class__) + ' ' + str(getframeinfo(currentframe()).lineno) \
                      + ': Exception "' + str(ex) \
                      + '" getting ' + str(left_or_right) + ' pattern list for var name "' + str(var_name) \
-                     + '", sentence "' + str(self.sentence) + '", var expressions "' + str(var_expressions) \
+                     + '", sentence "' + str(sentence) + '", var expressions "' + str(var_expressions) \
                      + '", data type "' + str(data_type) + '".'
             lg.Log.error(errmsg)
             return None
 
         m = self.get_var_value_regex(
-            # Always check float first
-            patterns_list=patterns_list,
-            var_name=var_name
+            sentence      = sentence,
+            patterns_list = patterns_list,
+            var_name      = var_name
         )
 
         group_position = 1
@@ -413,19 +413,25 @@ class MatchExpression:
                     str(MatchExpression.__class__) + ' ' + str(getframeinfo(currentframe()).lineno) \
                     + ': For ' + str(left_or_right) + ' match, expected at least ' + str(group_position) \
                     + ' match groups for var name "' + str(var_name) \
-                    + '", string "' + str(self.sentence) + '", var expressions "' + str(var_expressions) \
+                    + '", string "' + str(sentence) + '", var expressions "' + str(var_expressions) \
                     + '", data type "' + str(data_type) + '" but got groups ' + str(m.groups()) + '.'
                 lg.Log.warning(warn_msg)
         return None
 
     def get_params(
             self,
+            sentence,
             return_one_value = True
     ):
+        if not self.case_sensitive:
+            sentence = str(sentence).lower()
+
         #
         # Extract variables from question
         #
-        params_dict = self.extract_variable_values()
+        params_dict = self.extract_variable_values(
+            sentence = sentence
+        )
 
         if return_one_value:
             for var in params_dict.keys():
@@ -539,12 +545,12 @@ if __name__ == '__main__':
 
             a = prf.Profiling.start()
             cmobj = MatchExpression(
-                pattern=pattern,
-                sentence=sent
+                pattern = pattern
             )
             #a = prf.Profiling.start()
             params = cmobj.get_params(
-                return_one_value = False
+                sentence         = sent,
+                return_one_value = True
             )
             print(params)
             #print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
@@ -552,7 +558,8 @@ if __name__ == '__main__':
     exit(0)
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
     print(MatchExpression(
-        pattern = 'mth,int,月;day,int,日;t,time,完成;amt, float, 民币;bal,float,金额/余额',
-        sentence = '【中国农业银行】您尾号0579账户10月17日09:27完成代付交易人民币2309.95，余额2932.80。'
-    ).get_params(return_one_value = True)
-    )
+        pattern = 'mth,int,月;day,int,日;t,time,完成;amt, float, 民币;bal,float,金额/余额'
+    ).get_params(
+        sentence = '【中国农业银行】您尾号0579账户10月17日09:27完成代付交易人民币2309.95，余额2932.80。',
+        return_one_value = True
+    ))
