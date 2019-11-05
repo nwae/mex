@@ -57,7 +57,7 @@ In human level, the above says,
   Expect a person to type words ```<expr_1>``` or ```<expr_2>```...
   when describing this parameter.
   Also it is most likely you will find ```x``` on the ```<prfdir>```
-  side of the expressions."
+  (left or right) side of the expressions."
 
 ```<var_name>```
   can be anything but must be unique among the variables
