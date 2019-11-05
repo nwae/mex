@@ -81,6 +81,8 @@ In human level, the above says,
 ```<pdir>```
   is the preferred direction if return_one_value == True, otherwise it
   has no effect.
+  This parameter is optional, and most of the time is left out since we
+  can already return both left/right values for the user to choose.
 
 
 ### Built-in Algorithm
