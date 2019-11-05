@@ -31,7 +31,7 @@ will return a Python dictionary type,
   params_dict = {"m": 68.5, "d": "2019-09-08"}
 ```
 
-If return_one_value = False, return value is
+If ```return_one_value = False```, return value is
 
 ```
   # mass found on the right side, and date on the left
@@ -58,10 +58,10 @@ In human level, the above says,
   when presenting this parameter". <pdir> is the preferred direction of
   the parameter to extract 
 
-<var_name>
+```<var_name>```
   can be anything but must be unique among the variables
 
-<var_type>
+```<var_type>```
   can be
    - int
    - float
@@ -75,10 +75,10 @@ In human level, the above says,
    - str-th (any Thai string)
    - str-vi (any Vietnamese string)
    
-<expr_x>
+```<expr_x>```
   is the word you expect to see before/after the parameter
 
-<pdir>
+```<pdir>```
   is the preferred direction if return_one_value == True, otherwise it
   has no effect.
 
