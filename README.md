@@ -28,5 +28,8 @@ In human level, the above says,
    - email
    - str-en (any Latin string)
    - str-zh-cn (any simplified Chinese string)
+   - str-ko (any Hangul string)
+   - str-th (any Thai string)
+   - str-vi (any Vietnamese string)
 <expression_x> is the word you expect to see before/after the parameter
 
