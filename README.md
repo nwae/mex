@@ -1,7 +1,7 @@
 # mex
 
 Human Level Description of extracting parameters from sentence WITHOUT
-technical regular expression syntax.
+ugly and technical overkill of regular expression syntax.
 
 Higher Level Abstraction to re.match() to extract parameters.
 
@@ -15,7 +15,7 @@ var type if needed.
   # For variable 'd' of type datetime, we don't look for any words, just the
   #  datetime string anywhere in the sentence "My mass is 68.5kg on 2019-09-08"
   mex_pat = MatchExpression(
-     pattern = 'm, float, mass / вес / 重  ;  d, datetime, '
+     pattern = 'm, float, mass / вес / 重  ;  d, datetime, ',
   )
   params_dict = mex_pat.get_params(
      sentence = 'My mass is 68.5kg on 2019-09-08',
@@ -31,6 +31,9 @@ If return_one_value = False, return value is
   # mass found on the right side, and date on the left
   params_dict = {"m": [null, 68.5], "d": ["2019-09-08", null]}
 
+For customization of your own data types, you may utilize the parameter
+"map_vartype_to_regex" in the constructor.
+
 
 ### Language
   var_1;var_2;var_3;..
@@ -43,8 +46,11 @@ In human level, the above says,
   when presenting this parameter". <pdir> is the preferred direction of
   the parameter to extract 
 
-<var_name> can be anything but must be unique among the variables
-<var_type> can be
+<var_name>
+  can be anything but must be unique among the variables
+
+<var_type>
+  can be
    - int
    - float
    - number (string instead of integer and will not remove leading 0's)
@@ -56,7 +62,18 @@ In human level, the above says,
    - str-ko (any Hangul string)
    - str-th (any Thai string)
    - str-vi (any Vietnamese string)
-<expr_x> is the word you expect to see before/after the parameter
-<pdir> is the preferred direction if return_one_value == True, otherwise
-it has no effect.
+   
+<expr_x>
+  is the word you expect to see before/after the parameter
 
+<pdir>
+  is the preferred direction if return_one_value == True, otherwise it
+  has no effect.
+
+
+### Built-in Algorithm
+
+  - Proper sorting of longest to shortest of expressions to ensure
+    correctness of results
+  - Right side matching ignored when no expressions given
+  - 
