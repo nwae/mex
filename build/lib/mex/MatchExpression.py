@@ -206,12 +206,20 @@ class MatchExpression:
         # For right matching, we add common postfixes to expressions
         #
         if for_left_or_right_matching == MatchExpression.TERM_RIGHT:
-            postfix_list_for_right_matching = mexbuiltin.MexBuiltInTypes.ALL_EXPRESSION_POSTFIXES
-            if lang in mexbuiltin.MexBuiltInTypes.COMMON_EXPRESSION_POSTFIXES.keys():
-                postfix_list_for_right_matching = mexbuiltin.MexBuiltInTypes.COMMON_EXPRESSION_POSTFIXES[lang]
-            for expr in expressions_arr_raw_no_postfix:
-                for postfix in postfix_list_for_right_matching:
-                    expressions_arr_raw.append(expr + postfix)
+            #
+            # If no expressions are specified, then there is no need to match
+            # the right side, as we are only looking for the regex, and this is
+            # handled correctly on the left side but not on the right side.
+            # For example if we are looking for an email 'email@gmail.com', the
+            # right side will return only 'l@gmail.com'
+            #
+            if ''.join(expressions_arr_raw) != '':
+                postfix_list_for_right_matching = mexbuiltin.MexBuiltInTypes.ALL_EXPRESSION_POSTFIXES
+                if lang in mexbuiltin.MexBuiltInTypes.COMMON_EXPRESSION_POSTFIXES.keys():
+                    postfix_list_for_right_matching = mexbuiltin.MexBuiltInTypes.COMMON_EXPRESSION_POSTFIXES[lang]
+                for expr in expressions_arr_raw_no_postfix:
+                    for postfix in postfix_list_for_right_matching:
+                        expressions_arr_raw.append(expr + postfix)
 
         len_expressions_arr_raw = []
         for i in range(len(expressions_arr_raw)):
@@ -607,7 +615,7 @@ if __name__ == '__main__':
             #a = prf.Profiling.start()
             params = cmobj.get_params(
                 sentence         = sent,
-                return_one_value = True
+                return_one_value = False
             )
             print(params)
             #print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
