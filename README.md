@@ -11,9 +11,9 @@ var type if needed.
 
 
 ### Programming Syntax
-  # For variable 'm' of type float, we look for words 'mass', 'вес' or '重'
-  # For variable 'd' of type datetime, we don't look for any words, just the
-  #  datetime string anywhere in the sentence "My mass is 68.5kg on 2019-09-08"
+  // For variable 'm' of type float, we look for words 'mass', 'вес' or '重'
+  // For variable 'd' of type datetime, we don't look for any words, just the
+  //  datetime string anywhere in the sentence "My mass is 68.5kg on 2019-09-08"
   mex_pat = MatchExpression(
      pattern = 'm, float, mass / вес / 重  ;  d, datetime, ',
   )
@@ -22,13 +22,13 @@ var type if needed.
      return_one_value = True
   )
   
-will return
+will return a Python dictionary type,
 
   params_dict = {"m": 68.5, "d": "2019-09-08"}
   
 If return_one_value = False, return value is
 
-  # mass found on the right side, and date on the left
+  // mass found on the right side, and date on the left
   params_dict = {"m": [null, 68.5], "d": ["2019-09-08", null]}
 
 For customization of your own data types, you may utilize the parameter
@@ -37,9 +37,13 @@ For customization of your own data types, you may utilize the parameter
 
 ### Language
   var_1;var_2;var_3;..
+  
 where
+
   var_x = <var_name>,  <var_type>,  <expr_1> / <expr_2>/...  , <pdir> 
+  
 In human level, the above says,
+
   "Please extract variable x using <var_name> (e.g. email, date,
   and this variable is of type <var_type> (e.g. float, email, time")
   and expect a person to type words "<expr_1>" or "<expr_2>"...
@@ -76,4 +80,9 @@ In human level, the above says,
   - Proper sorting of longest to shortest of expressions to ensure
     correctness of results
   - Right side matching ignored when no expressions given
-  - 
+  - Built-in types with stable regex
+
+
+### TODOs
+
+  1. 
