@@ -3,10 +3,11 @@
 Human Level Description of extracting parameters from sentence WITHOUT
 technical regular expression syntax.
 
-Higher Level Abstraction to re.match() to extract parameters
-Never allow user to specify their own regex, this is the idea of this
+Higher Level Abstraction to re.match() to extract parameters.
+
+NEVER allow user to specify their own regex, this is the idea of mex
 abstraction or simplification - always keep it simple, support a new
-var type if need.
+var type if needed.
 
 
 ### Programming Syntax
