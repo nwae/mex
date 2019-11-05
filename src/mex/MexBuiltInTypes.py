@@ -35,6 +35,21 @@ class MexBuiltInTypes:
     CHARS_VIETNAMESE_LOWER = 'ăâàằầảẳẩãẵẫáắấạặậêèềẻểẽễéếẹệìỉĩíịôơòồờỏổởõỗỡóốớọộợưùừủửũữúứụựđ'
     CHARS_VIETNAMESE = CHARS_VIETNAMESE_LOWER + CHARS_VIETNAMESE_LOWER.upper()
 
+    #
+    # Language postfixes, for right side params
+    #
+    COMMON_EXPRESSION_POSTFIXES = {
+        'zh-cn': ['是'],
+        'en':    [' is', ' are'],
+        'ko':    ['는', '은', '가', '이'],
+        'th':    ['คือ'],
+        'vi':    ['là', 'la']
+    }
+    ALL_EXPRESSION_POSTFIXES = []
+    for lang in COMMON_EXPRESSION_POSTFIXES.keys():
+        for w in COMMON_EXPRESSION_POSTFIXES[lang]:
+            ALL_EXPRESSION_POSTFIXES.append(w)
+
     TERM_LEFT = 'left'
     TERM_RIGHT = 'right'
 
