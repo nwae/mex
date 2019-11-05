@@ -538,7 +538,7 @@ if __name__ == '__main__':
         {
             'mex': 'dt, datetime,   ;   acc, number, 계정 / 번호   ;   '
                    + 'm, int, 월   ;   d, int, 일   ;   t, time, 에   ;'
-                   + 'amt, float, 원   ;   bal, float, 잔액   ;'
+                   + 'am, float, 원   ;   bl, float, 잔액   ;'
                    + 'name, str-zh-cn, 】 ',
             'sentences': [
                 '2020-01-01: 번호 0011 계정은 9 월 23 일 10:12 에 1305.67 원, 잔액 9999.77.',
@@ -548,7 +548,7 @@ if __name__ == '__main__':
                 '2020-01-01: 번호 0044 계정은 5 월 27 일 完成23:24:55 에 5501.99 원, 잔액 6666.77.',
                 '2020-01-01: 번호0055계정은4월28일11:37에1111.22원，잔액5555.77.',
                 '2020-01-01: 번호0066계정은3월29일11:37:55에2222.33원，잔액4444.77',
-                '2020-01-01: 번호0777계정은30일 完成11:38:55에3333.44원',
+                '2020-01-01: 번호0777계정은30일 11:38:55에3333.44원',
                 '【은행】 陈豪贤于.',
                 'xxx 陈豪贤 】 于.',
                 '陈豪贤 】 于.',
@@ -591,16 +591,16 @@ if __name__ == '__main__':
             #a = prf.Profiling.start()
             params = cmobj.get_params(
                 sentence         = sent,
-                return_one_value = False
+                return_one_value = True
             )
             print(params)
             #print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
 
-    exit(0)
+    # exit(0)
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
     print(MatchExpression(
-        pattern = 'mth,int,月;day,int,日;t,time,完成;amt, float, 民币;bal,float,金额/余额'
+        pattern = 'm, float, mass / вес / 重  ;  d, datetime, '
     ).get_params(
-        sentence = '【中国农业银行】您尾号0579账户10月17日09:27完成代付交易人民币2309.95，余额2932.80。',
+        sentence = 'My mass is 68.5kg on 2019-09-08',
         return_one_value = True
     ))
