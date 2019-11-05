@@ -48,15 +48,16 @@ For customization of your own data types, you may utilize the parameter
 ```
 where
 ```
-  var_x = <var_name>,  <var_type>,  <expr_1> / <expr_2>/...  , <pdir> 
+  var_x = <var_name>,  <var_type>,  <expr_1> / <expr_2>/...  , [<prfdir>]
 ```
 In human level, the above says,
 
-  "Please extract variable x using <var_name> (e.g. email, date,
-  and this variable is of type <var_type> (e.g. float, email, time")
-  and expect a person to type words "<expr_1>" or "<expr_2>"...
-  when presenting this parameter". <pdir> is the preferred direction of
-  the parameter to extract 
+  "Please extract variable x using <var_name> and this variable is of
+  type <var_type> (e.g. float, email, time).
+  Expect a person to type words "<expr_1>" or "<expr_2>"... when describing
+  this parameter".
+  "<prfdir>" is the preferred direction of the parameter to extract when
+  specified to return only 1 value. This parameter is optional
 
 ```<var_name>```
   can be anything but must be unique among the variables
@@ -78,7 +79,7 @@ In human level, the above says,
 ```<expr_x>```
   is the word you expect to see before/after the parameter
 
-```<pdir>```
+```<prfdir>```
   is the preferred direction if return_one_value == True, otherwise it
   has no effect.
   This parameter is optional, and most of the time is left out since we
