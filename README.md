@@ -52,12 +52,12 @@ where
 ```
 In human level, the above says,
 
-  "Please extract variable x using <var_name> and this variable is of
-  type <var_type> (e.g. float, email, time).
-  Expect a person to type words "<expr_1>" or "<expr_2>"... when describing
-  this parameter".
-  "<prfdir>" is the preferred direction of the parameter to extract when
-  specified to return only 1 value. This parameter is optional
+  "Find variable ```x``` using ```<var_name>``` and ```x``` is of data
+  type ```<var_type>``` (e.g. float, email, time).
+  Expect a person to type words ```<expr_1>``` or ```<expr_2>```...
+  when describing this parameter.
+  Also it is most likely you will find ```x``` on the ```<prfdir>```
+  side of the expressions."
 
 ```<var_name>```
   can be anything but must be unique among the variables
