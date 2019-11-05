@@ -67,7 +67,7 @@ class MexBuiltInTypes:
                     '^([+\-]*[0-9]+[.][0-9]*)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
-                    # Right of variable expression
+                    # Right of non-empty variable expression
                     '([+\-]*[0-9]+[.][0-9]*).*'
                 ]
             },
@@ -79,7 +79,7 @@ class MexBuiltInTypes:
                     '^([+\-]*[0-9]+)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
-                    # Right of variable expression
+                    # Right of non-empty variable expression
                     '([+\-]*[0-9]+).*'
                 ]
             },
@@ -91,7 +91,7 @@ class MexBuiltInTypes:
                     '^([+\-]*[0-9]+)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
-                    # Right of variable expression
+                    # Right of non-empty variable expression
                     '([+\-]*[0-9]+).*'
                 ]
             },
@@ -109,9 +109,9 @@ class MexBuiltInTypes:
                     '^([0-9]+[:][0-9]+)',
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
-                    # HHMMSS. Right of variable expression
+                    # HHMMSS. Right of non-empty variable expression
                     '([0-9]+[:][0-9]+[:][0-9]+).*',
-                    # HHMM. Right of variable expression
+                    # HHMM. Right of non-empty variable expression
                     '([0-9]+[:][0-9]+).*'
                 ]
             },
@@ -133,11 +133,11 @@ class MexBuiltInTypes:
                     '^([0-9]{4}[-]*[0-1][0-9][-]*[0-3][0-9])',
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
-                    # "yyyymmdd HHMMSS". Right of variable expression
+                    # "yyyymmdd HHMMSS". Right of non-empty variable expression
                     '([0-9]{4}[-]*[0-1][0-9][-*][0-3][0-9][ ]+[0-9]+[:][0-9]+[:][0-9]+).*',
-                    # "yyyymmdd HHMM". Right of variable expression
+                    # "yyyymmdd HHMM". Right of non-empty variable expression
                     '([0-9]{4}[-]*[0-1][0-9][-*][0-3][0-9][ ]+[0-9]+[:][0-9]+).*',
-                    # "yyyymmdd"". Right of variable expression
+                    # "yyyymmdd"". Right of non-empty variable expression
                     '([0-9]{4}[-]*[0-1][0-9][-*][0-3][0-9]).*',
                 ]
             },
@@ -149,7 +149,7 @@ class MexBuiltInTypes:
                     '^([' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '[@][a-zA-Z0-9]+[.][a-zA-Z]+)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
-                    # Right of variable expression
+                    # Right of non-empty variable expression
                     # Note that if given math expressions are nothing or '', then
                     # 'email@x.com' will be returned correctly on the left side but
                     # the right side will return 'l@x.com'.
@@ -165,7 +165,7 @@ class MexBuiltInTypes:
                     '^([a-zA-Z]+)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
-                    # Right of variable expression
+                    # Right of non-empty variable expression
                     '([a-zA-Z]+).*'
                 ]
             },
@@ -177,7 +177,7 @@ class MexBuiltInTypes:
                     '^([\u4e00-\u9fff]+)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
-                    # Right of variable expression
+                    # Right of non-empty variable expression
                     '([\u4e00-\u9fff]+).*'
                 ]
             },
@@ -189,7 +189,7 @@ class MexBuiltInTypes:
                     '^([\u1100-\u11ff\uac00-\ud7af]+)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
-                    # Right of variable expression
+                    # Right of non-empty variable expression
                     '([\u1100-\u11ff\uac00-\ud7af]+).*'
                 ]
             },
@@ -201,7 +201,7 @@ class MexBuiltInTypes:
                     '^([\u0e00-\u0e5b]+)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
-                    # Right of variable expression
+                    # Right of non-empty variable expression
                     '([\u0e00-\u0e5b]+).*'
                 ]
             },
@@ -213,7 +213,7 @@ class MexBuiltInTypes:
                     '^([a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE + ']+)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
-                    # Right of variable expression
+                    # Right of non-empty variable expression
                     '([a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE + ']+).*'
                 ]
             },
