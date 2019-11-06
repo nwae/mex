@@ -13,7 +13,7 @@ var type if needed.
 ### Programming Syntax
 
 ```
-  # For variable 'm' of type float, we look for words 'mass', 'вес' or '重'
+  # For variable 'm' of type float, we look for words 'mass', '무게', 'вес' or '重'
   # For variable 'd' of type datetime, we don't look for any words, just the
   #  datetime string anywhere in the sentence "My mass is 68.5kg on 2019-09-08"
   mex_pat = MatchExpression(
