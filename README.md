@@ -45,7 +45,7 @@ For customization of your own data types, you may utilize the parameter
 
 ### Language
 ```
-  var_1;var_2;var_3;..
+  var_1  ;  var_2  ;  var_3  ..  var_n  ;  ..
 ```
 where
 ```
