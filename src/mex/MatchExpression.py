@@ -123,18 +123,31 @@ class MatchExpression:
                 if len(var_desc) >= 4:
                     part_var_preferred_direction = su.StringUtils.trim(var_desc[3]).lower()
 
-                expressions_arr_for_left_matching = \
-                    MatchExpression.process_expressions_for_var(
-                        mex_expressions = part_var_expressions,
-                        for_left_or_right_matching = MatchExpression.TERM_LEFT,
-                        lang = lang
+                try:
+                    expressions_arr_for_left_matching = \
+                        MatchExpression.process_expressions_for_var(
+                            mex_expressions = part_var_expressions,
+                            for_left_or_right_matching = MatchExpression.TERM_LEFT,
+                            lang = lang
+                        )
+                except Exception as ex_left:
+                    raise Exception(
+                        'Exception "' + str(ex_left) + '" processing left expressions for "'
+                        + str(part_var_expressions) + '" for var "' + str(part_var_id) + '".'
                     )
-                # For right matching, we add common postfixes to expressions
-                expressions_arr_for_right_matching = \
-                    MatchExpression.process_expressions_for_var(
-                        mex_expressions = part_var_expressions,
-                        for_left_or_right_matching = MatchExpression.TERM_RIGHT,
-                        lang = lang
+
+                try:
+                    # For right matching, we add common postfixes to expressions
+                    expressions_arr_for_right_matching = \
+                        MatchExpression.process_expressions_for_var(
+                            mex_expressions = part_var_expressions,
+                            for_left_or_right_matching = MatchExpression.TERM_RIGHT,
+                            lang = lang
+                        )
+                except Exception as ex_right:
+                    raise Exception(
+                        'Exception "' + str(ex_right) + '" processing right expressions for "'
+                        + str(part_var_expressions) + '" for var "' + str(part_var_id) + '".'
                     )
 
                 var_encoding[part_var_id] = {
@@ -159,12 +172,27 @@ class MatchExpression:
             lg.Log.error(errmsg)
             raise Exception(errmsg)
 
+    #
+    # Some processing we need to do:
+    #   - Append common postfixes to expressions (creating another one) based on language
+    #   - Sort by longest to shortest expressions
+    #
     @staticmethod
     def process_expressions_for_var(
             mex_expressions,
             for_left_or_right_matching,
             lang
     ):
+        mex_expressions = su.StringUtils.trim(mex_expressions)
+        if len(mex_expressions) > 1:
+            for expr_sep in MatchExpression.MEX_VAR_EXPRESSIONS_SEPARATORS:
+                # If mex expression has an ending '/', we remove it, but not for escaped '\\/'
+                mex_expressions = re.sub(
+                    pattern = '[^\\\\]' + str(expr_sep) + '$',
+                    repl    = '',
+                    string  = mex_expressions
+                )
+
         # We try to split by several separators for backward compatibility
         expressions_arr_raw_no_postfix = None
         for exp_sep in MatchExpression.MEX_VAR_EXPRESSIONS_SEPARATORS:
@@ -224,7 +252,7 @@ class MatchExpression:
                 expressions_arr = df_expressions['expression'].tolist()
                 lg.Log.debug(
                     str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno) \
-                    + ': Sorted ' + str(expressions_arr_raw) + ' to ' + str(expressions_arr)
+                    + ': Sorted  Expressions ' + str(expressions_arr_raw) + ' to ' + str(expressions_arr)
                 )
             except Exception as ex_sort:
                 lg.Log.error(
@@ -469,9 +497,17 @@ class MatchExpression:
         #
         # Extract variables from question
         #
-        params_dict = self.extract_variable_values(
-            sentence = sentence
-        )
+        params_dict = {}
+        try:
+            params_dict = self.extract_variable_values(
+                sentence = sentence
+            )
+        except Exception as ex:
+            errmsg = str(self.__class__) + ' ' + str(getframeinfo(currentframe()).lineno)\
+                     + ': Error extracting params from sentence "' + str(sentence)\
+                     + '" using pattern "' + str(self.pattern) + '". Exception ' + str(ex) + '.'
+            lg.Log.error(errmsg)
+            raise Exception(errmsg)
 
         if return_one_value:
             for var in params_dict.keys():
@@ -492,114 +528,9 @@ class MatchExpression:
 
 
 if __name__ == '__main__':
-    # cf_obj = cf.Config.get_cmdline_params_and_init_config_singleton(
-    #     Derived_Class = cf.Config
-    # )
-    lg.Log.DEBUG_PRINT_ALL_TO_SCREEN = True
-    lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_IMPORTANT
-
-    tests = [
-        {
-            # We also use the words 'test&escape' and ';' (clashes with var separator
-            # but works because we escape the word using '\\;')
-            # to detect diameter.
-            # Need to escape special mex characters like ; if used as expression
-            'mex': 'r, float, radius & r  ;'
-                   + 'd, float, diameter / d / test\\/escape / \\; / + / * /\\/   ;   ',
-            'sentences': [
-                'What is the volume of a sphere of radius 5.88?',
-                'What is the volume of a sphere of radius 5.88 and 4.9 diameter?',
-                'What is the volume of a sphere of radius 5.88 and 33.88 test&escape?',
-                'What is the volume of a sphere of radius 5.88, 33.88;?',
-                # When stupid user uses '+' to detect a param, should also work, but not recommended
-                'What is the volume of a sphere of radius 5.88, +33.88?',
-                # Using '*' to detect diameter
-                'What is the volume of a sphere of radius 5.88, 33.88*?',
-                # Using '&' to detect diameter
-                'What is the volume of a sphere of radius 5.88, 33.88&?',
-                # Should not detect diameter because we say to look for 'd', not any word ending 'd'
-                # But because we have to handle languages like Chinese/Thai where there is no word
-                # separator, we allow this and the diameter will be detected
-                'What is the volume of a sphere of radius 5.88 and 33.88?',
-                # Should not be able to detect now diameter
-                'What is the volume of a sphere of radius 5.88 / 33.88?'
-            ]
-        },
-        {
-            'mex': 'dt,datetime,   ;   email,email,   ;   inc, float, inc / inch / inches',
-            'sentences': [
-                'What is -2.6 inches? 20190322 05:15 send to me@abc.com.',
-                'What is +1.2 inches? 2019-03-22 05:15 you@email.ua ?',
-                '2019-03-22: u_ser-name.me@gmail.com is my email',
-                '이멜은u_ser-name.me@gmail.com',
-                'u_ser-name.me@gmail.invalid is my email'
-            ]
-        },
-        {
-            'mex': 'dt, datetime,   ;   acc, number, 계정 / 번호   ;   '
-                   + 'm, int, 월   ;   d, int, 일   ;   t, time, 에   ;'
-                   + 'am, float, 원   ;   bl, float, 잔액   ;'
-                   + 'name, str-zh-cn, 】 ',
-            'sentences': [
-                '2020-01-01: 번호 0011 계정은 9 월 23 일 10:12 에 1305.67 원, 잔액 9999.77.',
-                '20200101 xxx: 번호 0011 계정은 8 월 24 일 10:12 에 원 1305.67, 9999.77 잔액.',
-                'AAA 2020-01-01 11:52:22: 번호 0022 계정은 7 월 25 일 10:15:55 에 1405.78 원, 잔액 8888.77.',
-                '2020-01-01: 번호 0033 계정은 6 월 26 일 完成23:24 에 1505.89 원, 잔액 7777.77.',
-                '2020-01-01: 번호 0044 계정은 5 월 27 일 完成23:24:55 에 5501.99 원, 잔액 6666.77.',
-                '2020-01-01: 번호0055계정은4월28일11:37에1111.22원，잔액5555.77.',
-                '2020-01-01: 번호0066계정은3월29일11:37:55에2222.33원，잔액4444.77',
-                '2020-01-01: 번호0777계정은30일 11:38:55에3333.44원',
-                '【은행】 陈豪贤于.',
-                'xxx 陈豪贤 】 于.',
-                '陈豪贤 】 于.',
-            ]
-        },
-        {
-            # Longer names come first
-            # If we had put instead "이름 / 이름은", instead of detecting "김미소", it would return "은" instead
-            # But because we do internal sorting already, this won't happen
-            'mex': 'kotext, str-ko, 이름 / 이름은   ;'
-                   + 'thtext, str-th, ชื่อ   ;'
-                   + 'vitext, str-vi, tên   ;'
-                   + 'cntext, str-zh-cn, 名字 / 名 / 叫 / 我叫, right',
-            'sentences': [
-                '이름은 김미소 ชื่อ กุ้ง tên yêu ... 我叫是习近平。'
-            ],
-            'priority_direction': [
-                'right'
-            ]
-        }
-    ]
-
-    import nwae.utils.Profiling as prf
-
-    for test in tests:
-        pattern = test['mex']
-        sentences = test['sentences']
-        return_value_priorities = [MatchExpression.TERM_LEFT]*len(sentences)
-        if 'priority_direction' in test.keys():
-            return_value_priority = test['priority_direction']
-
-        for i in range(len(sentences)):
-            sent = sentences[i]
-
-            a = prf.Profiling.start()
-            cmobj = MatchExpression(
-                pattern = pattern,
-                lang    = 'zh-cn'
-            )
-            #a = prf.Profiling.start()
-            params = cmobj.get_params(
-                sentence         = sent,
-                return_one_value = True
-            )
-            print(params)
-            #print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
-
-    # exit(0)
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
     print(MatchExpression(
-        pattern = 'm, float, mass / вес / 重  ;  d, datetime, '
+        pattern = 'm, float, mass / 무게 / вес / 重 / ;  d, datetime, '
     ).get_params(
         sentence = 'My mass is 68.5kg on 2019-09-08',
         return_one_value = True
