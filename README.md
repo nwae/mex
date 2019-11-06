@@ -17,7 +17,9 @@ var type if needed.
   # For variable 'd' of type datetime, we don't look for any words, just the
   #  datetime string anywhere in the sentence "My mass is 68.5kg on 2019-09-08"
   mex_pat = MatchExpression(
-     pattern = 'm, float, mass / вес / 重  ;  d, datetime, ',
+     pattern = 'm, float, mass / 무게 / вес / 重  ;  d, datetime, ',
+     lang    = None  # can also be specific 'zh-cn', 'ko', 'th', 'vi', 'en'
+var type if needed.
   )
   params_dict = mex_pat.get_params(
      sentence = 'My mass is 68.5kg on 2019-09-08',
