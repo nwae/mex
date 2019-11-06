@@ -94,6 +94,9 @@ In human level, the above says,
   - Built-in types with stable regex
 
 
-### TODOs
+### Future Pipeline
 
-  1. 
+  1. Integrate nwae library with intent detection for common intents (confirmation, negation, order/booking types, etc.)
+  2. Support for more types like "username", NEs, term abstraction (e.g. action), other language strings, etc.
+  
+
