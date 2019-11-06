@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='mex',
-    version='1.2.2',
+    version='1.2.3',
     packages=[
         'mex'
     ],
@@ -13,6 +13,6 @@ setup(
     url='',
     license='',
     author='nwae',
-    author_email='705270564@qq.com',
+    author_email='m5251@naver.com',
     description='Match Expression'
 )
