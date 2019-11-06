@@ -19,11 +19,10 @@ var type if needed.
   mex_pat = MatchExpression(
      pattern = 'm, float, mass / 무게 / вес / 重  ;  d, datetime, ',
      lang    = None  # can also be specific 'zh-cn', 'ko', 'th', 'vi', 'en'
-var type if needed.
   )
   params_dict = mex_pat.get_params(
-     sentence = 'My mass is 68.5kg on 2019-09-08',
-     return_one_value = True
+     sentence         = 'My mass is 68.5kg on 2019-09-08',
+     return_one_value = True     # if False will return both (left,right) values
   )
 ```
 
