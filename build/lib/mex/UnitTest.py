@@ -118,6 +118,7 @@ class UnitTest:
 
         n_pass = 0
         n_fail = 0
+        total_time = 0
 
         for test in UnitTest.TESTS:
             pattern = test['mex']
@@ -149,9 +150,14 @@ class UnitTest:
                 else:
                     n_pass += 1
                     print('TEST OK ' + str(params))
-                # print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
+                interval_secs = prf.Profiling.get_time_dif(start=a, stop=prf.Profiling.stop(), decimals=5)
+                total_time += interval_secs
+                print('Took ' + str(interval_secs))
         print('')
         print('*** TEST PASS ' + str(n_pass) + ', FAIL ' + str(n_fail) + ' ***')
+        rps = round((n_pass+n_fail)/total_time, 2)
+        time_per_request = round(1000/rps, 2)
+        print('Result: ' + str(rps) + ' rps (requests per second), or ' + str(time_per_request) + 'ms per request')
 
     def __init__(self):
         raise Exception('Instantiation not supported.')

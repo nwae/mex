@@ -225,6 +225,7 @@ class MatchExpression:
                     for postfix in postfix_list_for_right_matching:
                         expressions_arr_raw.append(expr + postfix)
 
+        sort_via_length = True
         len_expressions_arr_raw = []
         for i in range(len(expressions_arr_raw)):
             len_expressions_arr_raw.append(len(expressions_arr_raw[i]))
@@ -233,6 +234,7 @@ class MatchExpression:
             str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno)
             + ': Raw Expressions for ' + str(for_left_or_right_matching) + ' matching: '
             + str(expressions_arr_raw)
+            # + '. Len ' + str(len_expressions_arr_raw)
         )
 
         #
@@ -244,20 +246,32 @@ class MatchExpression:
         expressions_arr = expressions_arr_raw
         if len(expressions_arr_raw) > 1:
             try:
-                df_expressions = pd.DataFrame({
-                    'expression': expressions_arr_raw,
-                    'len': len_expressions_arr_raw
-                })
-                df_expressions = df_expressions.sort_values(by=['len'], ascending=False)
-                expressions_arr = df_expressions['expression'].tolist()
+                if sort_via_length:
+                    df_expressions = pd.DataFrame({
+                        'expression': expressions_arr_raw,
+                        'len': len_expressions_arr_raw
+                    })
+                    df_expressions = df_expressions.sort_values(by=['len'], ascending=False)
+                    expressions_arr = df_expressions['expression'].tolist()
+                else:
+                    # Normal alphabetical sorting in reverse (so that longer appear first if initial
+                    # alphabets are the same)
+                    # This sorted() function is TWICE SLOWER than pandas sort by length!!!!
+                    expressions_arr = sorted(
+                        expressions_arr_raw,
+                        reverse = True
+                    )
                 lg.Log.debug(
                     str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno) \
-                    + ': Sorted  Expressions ' + str(expressions_arr_raw) + ' to ' + str(expressions_arr)
+                    + ': Sorted (sort by length=' + str(sort_via_length)
+                    + ' Expressions ' + str(expressions_arr_raw)
+                    + ' to \n\r' + str(expressions_arr)
                 )
             except Exception as ex_sort:
                 lg.Log.error(
                     str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno)
-                    + ': Failed to sort ' + str(expressions_arr_raw) + ', len arr ' + str(len_expressions_arr_raw)
+                    + ': Failed to sort ' + str(expressions_arr_raw)
+                    + ', len arr ' + str(len_expressions_arr_raw)
                     + '. Exception ' + str(ex_sort) + '.'
                 )
                 expressions_arr = expressions_arr_raw
@@ -529,9 +543,13 @@ class MatchExpression:
 
 if __name__ == '__main__':
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
+    import nwae.utils.Profiling as prf
+    a = prf.Profiling.start()
     print(MatchExpression(
         pattern = 'm, float, mass / 무게 / вес / 重 / ;  d, datetime, '
     ).get_params(
         sentence = 'My mass is 68.5kg on 2019-09-08',
         return_one_value = True
     ))
+    print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
+
