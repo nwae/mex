@@ -9,6 +9,7 @@ class UnitTest:
 
     TESTS = [
         {
+            # Trailing '/' in '...вес / 重 /' should be removed automatically
             'mex': 'm, float, mass / 무게 / вес / 重 / ;  d, datetime, ',
             'lang': None,
             'sentences': [
@@ -165,3 +166,13 @@ class UnitTest:
 
 if __name__ == '__main__':
     UnitTest.run_tests()
+
+    exit (0)
+    lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
+    print(mexpr.MatchExpression(
+        pattern = 'm, float, ma-ss / 무게 / вес / 重 / ;  d, datetime, '
+    ).get_params(
+        sentence = 'My ma-ss is 68.5kg on 2019-09-08',
+        return_one_value = True
+    ))
+
