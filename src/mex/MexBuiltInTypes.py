@@ -43,7 +43,7 @@ class MexBuiltInTypes:
         'en':    [' is', ' are'],
         'ko':    ['는', '은', '가', '이'],
         'th':    ['คือ'],
-        'vi':    ['là', 'la']
+        'vi':    [' là', ' la']
     }
     ALL_EXPRESSION_POSTFIXES = []
     for lang in COMMON_EXPRESSION_POSTFIXES.keys():
