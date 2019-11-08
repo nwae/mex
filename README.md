@@ -40,7 +40,7 @@ If ```return_one_value = False```, return value is
 ```
 
 For customization of your own data types, you may utilize the parameter
-"map_vartype_to_regex" in the constructor.
+```map_vartype_to_regex``` in the constructor.
 
 
 ### Language
