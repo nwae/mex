@@ -28,9 +28,9 @@ class MatchExpression:
     MEX_OBJECT_VARS_EXPRESIONS_FOR_RIGHT_MATCHING = 'expressions_for_right_matching'
     MEX_OBJECT_VARS_PREFERRED_DIRECTION = 'preferred_direction'
 
-    # Separates the different variables definition. e.g. 'm,float,mass&m;c,float,light&speed'
+    # Separates the different variables definition. e.g. 'm, float, mass & m   ;   c, float, light & speed'
     MEX_VAR_DEFINITION_SEPARATOR = ';'
-    # Separates the description of the same variable. e.g. 'm,float,mass&m'
+    # Separates the description of the same variable. e.g. 'm, float, mass & m'
     MEX_VAR_DESCRIPTION_SEPARATOR = ','
     # Separates the names of a variable. e.g. 'mass / m'. Accept either '/' or '&'
     MEX_VAR_EXPRESSIONS_SEPARATORS = ['/','&']

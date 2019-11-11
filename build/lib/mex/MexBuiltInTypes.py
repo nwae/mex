@@ -61,14 +61,22 @@ class MexBuiltInTypes:
         return {
             MexBuiltInTypes.MEX_TYPE_FLOAT: {
                 MexBuiltInTypes.TERM_LEFT: [
-                    # Left of variable expression
+                    # float type. Left of variable expression
                     '.*[^0-9\-]+([+\-]*[0-9]+[.][0-9]*)',
-                    # Left of variable expression at the start of sentence
-                    '^([+\-]*[0-9]+[.][0-9]*)'
+                    # float type. Left of variable expression at the start of sentence
+                    '^([+\-]*[0-9]+[.][0-9]*)',
+                    # float type must also support int type
+                    # int type. Left of variable expression
+                    '.*[^0-9\-]+([+\-]*[0-9]+)',
+                    # int type. Left of variable expression at the start of sentence
+                    '^([+\-]*[0-9]+)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
-                    # Right of non-empty variable expression
-                    '([+\-]*[0-9]+[.][0-9]*).*'
+                    # float type. Right of non-empty variable expression
+                    '([+\-]*[0-9]+[.][0-9]*).*',
+                    # float type must also support int type
+                    # int type. Right of non-empty variable expression
+                    '([+\-]*[0-9]+).*'
                 ]
             },
             MexBuiltInTypes.MEX_TYPE_INT: {

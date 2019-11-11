@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='mex',
-    version='1.2.6',
+    version='1.2.7',
     packages=[
         'mex'
     ],
