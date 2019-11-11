@@ -13,7 +13,9 @@ class UnitTest:
             'mex': 'm, float, mass / 무게 / вес / 重 / ;  d, datetime, ',
             'lang': None,
             'sentences': [
-                ('My mass is 68.5kg on 2019-09-08', {'m': 68.5, 'd': '2019-09-08'})
+                ('My mass is 68.5kg on 2019-09-08', {'m': 68.5, 'd': '2019-09-08'}),
+                # float type should also work if entered integer
+                ('My mass is 68kg on 2019-09-08', {'m': 68.0, 'd': '2019-09-08'}),
             ]
         },
         {
