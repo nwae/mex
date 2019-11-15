@@ -104,5 +104,6 @@ In human level, the above says,
      This will enable us to return not just param variables, but also the intent class. 
   2. Support for more types like "username", NEs, term abstraction (e.g. action), other language strings, etc.
   3. Support for complex sentences, e. g. "The movie rating, according to AGB was 10.5%."
-  
+  4. Optimize speed.
+
 
