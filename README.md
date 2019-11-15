@@ -9,6 +9,9 @@ NEVER allow user to specify their own regex, this is the idea of mex
 abstraction or simplification - always keep it simple, support a new
 var type if needed.
 
+### Installation
+
+```pip install mex```
 
 ### Programming Syntax
 
