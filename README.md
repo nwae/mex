@@ -103,6 +103,6 @@ In human level, the above says,
   1. Integrate nwae library with intent detection for common intents (confirmation, negation, order/booking types, etc.)
      This will enable us to return not just param variables, but also the intent class. 
   2. Support for more types like "username", NEs, term abstraction (e.g. action), other language strings, etc.
-  3. Support for complex sentences, e. g. "The movie rating, according to XYZ was 10.5%."
+  3. Support for complex sentences, e. g. "The movie rating, according to AGB was 10.5%."
   
 
