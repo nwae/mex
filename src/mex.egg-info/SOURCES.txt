@@ -1,5 +1,6 @@
 README.md
 src/mex/MatchExpression.py
+src/mex/MexAPI.py
 src/mex/MexBuiltInTypes.py
 src/mex/UnitTest.py
 src/mex.egg-info/PKG-INFO
