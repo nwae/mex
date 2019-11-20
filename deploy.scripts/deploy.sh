@@ -7,7 +7,7 @@ SCRIPT_NAME="$0"
 # Modify only these variables
 ########################################################################################
 # Where this script is relative to project directory
-PROGRAM_NAME="YOUR PROGRAM NAME"
+PROGRAM_NAME="Mex REST API"
 RUN_SCRIPT="./run.mex-api.sh"
 KILL_SCRIPT="./kill.by.port.sh"
 CLEANUP_SCRIPT=""

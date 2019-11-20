@@ -15,9 +15,9 @@ import json
 #
 app = flask.Flask(__name__)
 
-def Start_Mex_API():
-    obj = MexAPI()
-    return obj
+def Start_Mex_Api():
+    mex_api = MexAPI()
+    return mex_api
 
 #
 # Flask DOES NOT run in multithreaded mode and handle 1 request at
@@ -60,6 +60,7 @@ class MexAPI:
             self
     ):
         self.app = app
+        self.port = 5000
         self.app.config['DEBUG'] = False
         self.__init_rest_urls()
         return
@@ -109,13 +110,10 @@ class MexAPI:
     def run_mex_api(self, host='0.0.0.0'):
         self.app.run(
             host = host,
-            port = 5000,
+            port = self.port,
             # threaded = True
         )
 
 
 if __name__ == '__main__':
-    #lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
-    #lg.Log.DEBUG_PRINT_ALL_TO_SCREEN = True
-    intent_api_instance = Start_Mex_API()
-    intent_api_instance.run_mex_api()
+    MexAPI().run_mex_api()
