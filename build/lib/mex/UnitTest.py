@@ -20,13 +20,17 @@ class UnitTest:
         },
         {
             # Trailing '/' in '...вес / 重 /' should be removed automatically
-            'mex': 'm, float, dollar / dollars / $   ;   y, int, year /yr ',
+            'mex': 'm, float, dollar / dollars / $ / ^  ;   y, int, year / yr / - / ',
             'lang': None,
             'sentences': [
                 # Common dollar sign '$' should be correctly bracketed in our regex
                 ('My salary in year 2019 is $8888.99.', {'m': 8888.99, 'y': 2019}),
                 # Common dollar sign '$' should be correctly bracketed in our regex
                 ('My salary in year 2019 is $8888.99 man...', {'m': 8888.99, 'y': 2019}),
+                # Another special character '^' should be correctly bracketed in our regex
+                ('My salary in year 2019 is ^ 8888.99 man...', {'m': 8888.99, 'y': 2019}),
+                # Another special character '-' should be correctly work also
+                ('My salary in - 2019 is $ 8888.99 man...', {'m': 8888.99, 'y': 2019})
             ]
         },
         {
