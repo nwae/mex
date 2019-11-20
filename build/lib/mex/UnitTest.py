@@ -19,16 +19,29 @@ class UnitTest:
             ]
         },
         {
+            # Trailing '/' in '...вес / 重 /' should be removed automatically
+            'mex': 'm, float, dollar / dollars / $   ;   y, int, year /yr ',
+            'lang': None,
+            'sentences': [
+                # Common dollar sign '$' should be correctly bracketed in our regex
+                ('My salary in year 2019 is $8888.99.', {'m': 8888.99, 'y': 2019}),
+                # Common dollar sign '$' should be correctly bracketed in our regex
+                ('My salary in year 2019 is $8888.99 man...', {'m': 8888.99, 'y': 2019}),
+            ]
+        },
+        {
             # We also use the words 'test&escape' and ';' (clashes with var separator
             # but works because we escape the word using '\\;')
             # to detect diameter.
             # Need to escape special mex characters like ; if used as expression
             'mex': 'r, float, radius & r  ;'
-                   + 'd, float, diameter / d / test\\/escape / \\; / + / * /\\/   ;   ',
+                   + 'd, float, diameter / d / test\\/escape / \\; / + / * /\\/ / \\&   ;   ',
             'lang': 'en',
             # Sentence & Expected Result
             'sentences': [
                 ('What is the volume of a sphere of radius 5.88?', {'r': 5.88, 'd': None}),
+                # Ending '.' should not affect result
+                ('What is the volume of a sphere of radius 5.88.', {'r': 5.88, 'd': None}),
                 ('What is the volume of a sphere of radius 5.88 and 4.9 diameter?', {'r': 5.88, 'd': 4.9}),
                 ('What is the volume of a sphere of radius 5.88 and 33.88 test&escape?', {'r': 5.88, 'd': 33.88}),
                 ('What is the volume of a sphere of radius 5.88, 33.88;?', {'r': 5.88, 'd': 33.88}),
@@ -43,7 +56,11 @@ class UnitTest:
                 # separator, we allow this and the diameter will be detected
                 ('What is the volume of a sphere of radius 5.88 and 33.88?', {'r': 5.88, 'd': 33.88}),
                 # Should not be able to detect now diameter, return d=5.88 due to left priority
-                ('What is the volume of a sphere of radius 5.88 / 33.88?', {'r': 5.88, 'd': 5.88})
+                ('What is the volume of a sphere of radius 5.88 / 33.88?', {'r': 5.88, 'd': 5.88}),
+                # Test the unusual keyword 'test/escape'
+                ('What is the volume of a sphere of radius 5.88, test/escape 33.88?', {'r': 5.88, 'd': 33.88}),
+                # Test the unusual keyword '&'
+                ('What is the volume of a sphere of radius 5.88, & 33.88?', {'r': 5.88, 'd': 33.88})
             ]
         },
         {
