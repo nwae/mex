@@ -169,8 +169,6 @@ if [ $USE_GUNICORN -eq 0 ]; then
        configfile="$CONFIGFILE" \
        port="$PORT"
 else
-  echo "[$SCRIPT_NAME] NOT YET IMPLEMENTED $PROGRAM_NAME running from gunicorn."
-  exit 1
   PYTHONPATH="$PROJECTDIR"/"$SOURCE_DIR":"$EXTERNAL_SRC_FOLDERS" \
    $GUNICORN_BIN \
       -w "$GUNICORN_WORKERS" -k "$GUNICORN_WORKER_TYPE" $GUNICORN_WORKER_TYPE_FLAG \
