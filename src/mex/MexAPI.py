@@ -25,6 +25,12 @@ def Start_Mex_API():
 #
 class MexAPI:
 
+    EXAMPLE_USAGE = \
+        'http://localhost:5000/mex?'\
+        +'ret=1&'\
+        +'pattern=m,float,dollar/dollars/make/$;y,int,year/yr&'\
+        +'txt=my salary in year 2019 is $8888.'
+
     def __init_rest_urls(self):
         #
         # Mex parameters extraction
@@ -36,7 +42,8 @@ class MexAPI:
             ret_how_many = self.get_param(param_name='ret', method='GET')
 
             if not (pattern and text):
-                return 'Missing parameters <pattern> or <txt>'
+                return 'Missing parameters "pattern" or "txt". '\
+                       + 'Example Usage: "' + MexAPI.EXAMPLE_USAGE + '".'
             ret_one_value = True
             if ret_how_many == '2':
                 ret_one_value = False
@@ -108,5 +115,7 @@ class MexAPI:
 
 
 if __name__ == '__main__':
+    #lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
+    #lg.Log.DEBUG_PRINT_ALL_TO_SCREEN = True
     intent_api_instance = Start_Mex_API()
     intent_api_instance.run_mex_api()
