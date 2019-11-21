@@ -13,7 +13,7 @@ var type if needed.
 
 ```pip install mex```
 
-### Deployment (Mex Rest API)
+### Deployment (Mex Rest API port 5000)
 
 Ready scripts to deploy on any Linux server. Default will run using 3
 gunicorn workers using worker type "sync". Configurable in the scripts.
