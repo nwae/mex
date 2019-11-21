@@ -17,6 +17,7 @@ var type if needed.
 
 Ready scripts to deploy on any Linux server. Default will run using 3
 gunicorn workers using worker type "sync". Configurable in the scripts.
+Logs directed to mex/logs/ folder.
 
 ```
 cd deploy.scripts
