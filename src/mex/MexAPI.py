@@ -5,7 +5,9 @@ import nwae.utils.Log as lg
 from inspect import currentframe, getframeinfo
 import mex.MatchExpression as mx
 import json
-
+import nwae.utils.CmdLine as cl
+import os
+import re
 
 #
 # Flask is not multithreaded, all requests are lined up. This explains why request
@@ -15,9 +17,6 @@ import json
 #
 app = flask.Flask(__name__)
 
-def Start_Mex_Api():
-    mex_api = MexAPI()
-    return mex_api
 
 #
 # Flask DOES NOT run in multithreaded mode and handle 1 request at
@@ -115,5 +114,17 @@ class MexAPI:
         )
 
 
-if __name__ == '__main__':
-    MexAPI().run_mex_api()
+#
+# Decide whether to run multi-threaded in gunicorn or not
+#
+pv = cl.CmdLine.get_cmdline_params(pv_default={'gunicorn': '0'})
+mex_api = MexAPI()
+cwd = os.getcwd()
+cwd = re.sub(pattern='([/\\\\]mex[/\\\\]).*', repl='/mex/', string=cwd)
+lg.Log.LOGFILE = cwd + 'logs/mex.log'
+print('Logs will be directed to log file (with date) "' + str(lg.Log.LOGFILE) + '"')
+if pv['gunicorn'] == '1':
+    lg.Log.important('Starting Mex API with gunicorn from folder "' + str(cwd))
+else:
+    lg.Log.important('Starting Mex API without gunicorn from folder "' + str(cwd))
+    mex_api.run_mex_api()
