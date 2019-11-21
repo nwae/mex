@@ -19,8 +19,8 @@ GUNICORN_WORKER_TYPE_FLAG=""
 SOURCE_DIR="../src"
 COMPILE_MODULE="."
 # If run just a single threaded Flask, use "mex.MexAPI" and set USE_GUNICORN=0
-# If run using multithreaded workers, use "mex.WSGI" and set USE_GUNICORN=1
-MODULE_TO_RUN="mex.WSGI"
+# If run using multithreaded workers, use "mex.MexAPI:app" and set USE_GUNICORN=1
+MODULE_TO_RUN="mex.MexAPI:app"
 # Folders separated by ":"
 EXTERNAL_SRC_FOLDERS="../../nwae.utils/src"
 ########################################################################################
@@ -169,7 +169,8 @@ if [ $USE_GUNICORN -eq 0 ]; then
   PYTHONPATH="$PROJECTDIR"/"$SOURCE_DIR":"$EXTERNAL_SRC_FOLDERS" \
      $PYTHON_BIN -m "$MODULE_TO_RUN" \
        configfile="$CONFIGFILE" \
-       port="$PORT"
+       port="$PORT" \
+       gunicorn="$USE_GUNICORN"
 else
   echo "[$SCRIPT_NAME] Starting $PROGRAM_NAME module '$MODULE_TO_RUN' with gunicorn.."
   PYTHONPATH="$PROJECTDIR"/"$SOURCE_DIR":"$EXTERNAL_SRC_FOLDERS" \
@@ -178,7 +179,8 @@ else
       --bind 0.0.0.0:"$PORT" \
          "$MODULE_TO_RUN" \
             configfile="$CONFIGFILE" \
-            port="$PORT"
+            port="$PORT" \
+            gunicorn="$USE_GUNICORN"
 fi
 
 if ! cd - ; then
