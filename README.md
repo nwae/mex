@@ -13,7 +13,7 @@ var type if needed.
 
 ```pip install mex```
 
-### Deployment
+### Deployment (Mex Rest API)
 
 Ready scripts to deploy on any Linux server. Default will run using 3
 gunicorn workers using worker type "sync". Configurable in the scripts.
