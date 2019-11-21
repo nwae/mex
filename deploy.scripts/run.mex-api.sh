@@ -18,6 +18,8 @@ GUNICORN_WORKER_TYPE="sync"
 GUNICORN_WORKER_TYPE_FLAG=""
 SOURCE_DIR="../src"
 COMPILE_MODULE="."
+# If run just a single threaded Flask, use "mex.MexAPI" and set USE_GUNICORN=0
+# If run using multithreaded workers, use "mex.WSGI" and set USE_GUNICORN=1
 MODULE_TO_RUN="mex.WSGI"
 # Folders separated by ":"
 EXTERNAL_SRC_FOLDERS="../../nwae.utils/src"
