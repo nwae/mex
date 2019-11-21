@@ -92,7 +92,9 @@ In human level, the above says,
    - str-vi (any Vietnamese string)
    
 ```<expr_x>```
-  is the word you expect to see before/after the parameter
+  is the word you expect to see before/after the parameter.
+  If using the special keywords "/" or "&" in the expressions,
+  you need to escape them "\\/", "\\&".
 
 ```<prfdir>```
   is the preferred direction if ```return_one_value == True```, otherwise it
