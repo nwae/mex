@@ -27,7 +27,7 @@ class MexAPI:
     EXAMPLE_USAGE = \
         'http://localhost:5000/mex?'\
         +'ret=1&'\
-        +'pattern=m,float,dollar/dollars/make/$;y,int,year/yr&'\
+        +'pattern=m,float,dollar/dollars/make/$;y,number,year/yr,2-4&'\
         +'txt=my salary in year 2019 is $8888.'
 
     def __init_rest_urls(self):

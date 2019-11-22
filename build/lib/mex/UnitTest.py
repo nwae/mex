@@ -118,14 +118,17 @@ class UnitTest:
             # Longer names come first
             # If we had put instead "이름 / 이름은", instead of detecting "김미소", it would return "은" instead
             # But because we do internal sorting already, this won't happen
-            'mex': 'kotext, str-ko, 이름 / 이름은   ;'
+            'mex': 'kotext, str-ko, 이름 / 이름은 , 3  ;'
                    + 'thtext, str-th, ชื่อ   ;'
                    + 'vitext, str-vi, tên   ;'
-                   + 'cntext, str-zh-cn, 名字 / 名 / 叫 / 我叫, right',
+                   + 'cntext, str-zh-cn, 名字 / 名 / 叫 / 我叫 , 2-3, right',
             'lang': None,
             'sentences': [
                 ('이름은 김미소 ชื่อ กุ้ง tên yêu ... 我叫是习近平。',
-                 {'kotext': '김미소', 'thtext': 'กุ้ง', 'vitext': 'yêu', 'cntext': '习近平'} )
+                 {'kotext': '김미소', 'thtext': 'กุ้ง', 'vitext': 'yêu', 'cntext': '习近平'} ),
+                # '习近平近平' should be truncated to '习近平', '김미소미소' should be truncated to '김미소'
+                ('이름은 김미소미소 ชื่อ กุ้งกุ้ง tên yêu yêu ... 我叫是习近平近平。',
+                 {'kotext': '김미소', 'thtext': 'กุ้งกุ้ง', 'vitext': 'yêu', 'cntext': '习近平'})
             ],
             'priority_direction': [
                 'right'
