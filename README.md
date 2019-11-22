@@ -99,8 +99,8 @@ In human level, the above says,
 ```<len_range>```
   is the length range of the variable. e.g. If "2-5", means if anything
   less than length 2, will return None, and if anything longer than 5, will
-  be truncated to length 50.
-  This option has no effect on non-string types "int" and "float".
+  be truncated to length 5.
+  This option has no effect on non-string types like "int", "float".
 
 ```<prfdir>```
   is the preferred direction if ```return_one_value == True```, otherwise it
