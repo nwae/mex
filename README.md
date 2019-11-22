@@ -63,7 +63,7 @@ For customization of your own data types, you may utilize the parameter
 ```
 where
 ```
-  var_x = <var_name>,  <var_type>,  <expr_1> / <expr_2>/...  , [<prfdir>]
+  var_x = <var_name>,  <var_type>,  <expr_1> / <expr_2>/...  , [<len-range>], [<prfdir>]
 ```
 In human level, the above says,
 
@@ -95,6 +95,11 @@ In human level, the above says,
   is the word you expect to see before/after the parameter.
   If using the special keywords "/" or "&" in the expressions,
   you need to escape them "\\/", "\\&".
+
+```<len_range>```
+  is the length range of the variable. e.g. If "2-5", means if anything
+  less than length 2, will return None, and if anything longer than 5, will
+  be truncated to length 50.
 
 ```<prfdir>```
   is the preferred direction if ```return_one_value == True```, otherwise it

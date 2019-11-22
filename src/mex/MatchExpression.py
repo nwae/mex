@@ -26,6 +26,7 @@ class MatchExpression:
     MEX_OBJECT_VARS_EXPRESIONS_FOR_LEFT_MATCHING = 'expressions_for_left_matching'
     # This might come with postfixes (e.g. 'is') attached to expressions
     MEX_OBJECT_VARS_EXPRESIONS_FOR_RIGHT_MATCHING = 'expressions_for_right_matching'
+    MEX_OBJECT_VARS_LENGTH_RANGE = 'length_range'
     MEX_OBJECT_VARS_PREFERRED_DIRECTION = 'preferred_direction'
 
     # Separates the different variables definition. e.g. 'm, float, mass & m   ;   c, float, light & speed'
@@ -73,15 +74,19 @@ class MatchExpression:
         return
 
     #
-    # Extract from string encoding 'm,float,mass&m;c,float,light&speed' into something like:
+    # Extract from string encoding
+    #   'm, float , mass / m   ;   c, float, light / speed'
+    # into something like:
     #   {
     #      'm': {
     #         'type': 'float',
-    #         'names': ['mass', 'm']
+    #         'expressions_for_left_matching': ['mass', 'm'],
+    #         'expressions_for_right_matching': ['mass is', 'mass', 'm is', 'm']
     #      },
     #      'c': {
     #         'type': 'float',
-    #         'names': ['speed', 'light']
+    #         'expressions_for_left_matching': ['speed', 'light'],
+    #         'expressions_for_right_matching': ['speed is', 'speed', 'light is', 'light']
     #      }
     #   }
     #
@@ -116,12 +121,33 @@ class MatchExpression:
                         + '" from mex pattern "' + str(self.pattern)
                     )
 
+                lg.Log.debugdebug('Pattern "' + str(unit_mex_pattern) + '" split to: ' + str(var_desc))
+
                 part_var_id = su.StringUtils.trim(var_desc[0])
                 part_var_type = su.StringUtils.trim(var_desc[1])
                 part_var_expressions = su.StringUtils.trim(var_desc[2])
-                part_var_preferred_direction = MatchExpression.TERM_LEFT
+                part_var_len_range = None
                 if len(var_desc) >= 4:
-                    part_var_preferred_direction = su.StringUtils.trim(var_desc[3]).lower()
+                    try:
+                        part_var_len_range = su.StringUtils.trim(var_desc[3]).lower().split('-')
+                        len_arr= len(part_var_len_range)
+                        if len_arr == 0:
+                            part_var_len_range = None
+                        elif len_arr == 1:
+                            part_var_len_range.append(part_var_len_range[0])
+                        for i in range(len(part_var_len_range)):
+                            part_var_len_range[i] = int(part_var_len_range[i])
+                    except Exception as ex_var_len:
+                        lg.Log.error(
+                            str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno)
+                            + ': Exception "' + str(ex_var_len)
+                            + '" processing expressions length part "' + str(var_desc[3])
+                            + '", set to None.'
+                        )
+                        part_var_len_range = None
+                part_var_preferred_direction = MatchExpression.TERM_LEFT
+                if len(var_desc) >= 5:
+                    part_var_preferred_direction = su.StringUtils.trim(var_desc[4]).lower()
 
                 try:
                     expressions_arr_for_left_matching = \
@@ -156,6 +182,7 @@ class MatchExpression:
                     # Extract ['mass','m'] from 'mass / m'
                     MatchExpression.MEX_OBJECT_VARS_EXPRESIONS_FOR_LEFT_MATCHING: expressions_arr_for_left_matching,
                     MatchExpression.MEX_OBJECT_VARS_EXPRESIONS_FOR_RIGHT_MATCHING: expressions_arr_for_right_matching,
+                    MatchExpression.MEX_OBJECT_VARS_LENGTH_RANGE: part_var_len_range,
                     # Extract 'left'
                     MatchExpression.MEX_OBJECT_VARS_PREFERRED_DIRECTION: part_var_preferred_direction
                 }
@@ -319,6 +346,7 @@ class MatchExpression:
                 '|'.join(self.mex_obj_vars[var][MatchExpression.MEX_OBJECT_VARS_EXPRESIONS_FOR_LEFT_MATCHING])
             var_expressions_for_right_matching = \
                 '|'.join(self.mex_obj_vars[var][MatchExpression.MEX_OBJECT_VARS_EXPRESIONS_FOR_RIGHT_MATCHING])
+            var_len_range = self.mex_obj_vars[var][MatchExpression.MEX_OBJECT_VARS_LENGTH_RANGE]
 
             data_type = self.mex_obj_vars[var][MatchExpression.MEX_OBJECT_VARS_TYPE]
 
@@ -333,6 +361,12 @@ class MatchExpression:
                 data_type       = data_type,
                 left_or_right   = MatchExpression.TERM_LEFT
             )
+            # Put to None if length range not satisfied
+            if var_len_range and value_left:
+                if len(value_left) < var_len_range[0]:
+                    value_left = None
+                elif len(value_left) > var_len_range[1]:
+                    value_left = value_left[0:var_len_range[1]]
             value_right = self.get_var_value(
                 sentence        = sentence,
                 var_name        = var,
@@ -340,6 +374,11 @@ class MatchExpression:
                 data_type       = data_type,
                 left_or_right   = MatchExpression.TERM_RIGHT
             )
+            if var_len_range and value_right:
+                if len(value_right) < var_len_range[0]:
+                    value_right = None
+                elif len(value_right) > var_len_range[1]:
+                    value_right = value_right[0:var_len_range[1]]
 
             if value_left or value_right:
                 lg.Log.debug(
@@ -546,7 +585,7 @@ if __name__ == '__main__':
     import nwae.utils.Profiling as prf
     a = prf.Profiling.start()
     print(MatchExpression(
-        pattern = 'm, float, mass / 무게 / вес / 重 / ;  d, datetime, '
+        pattern = 'm, float, mass / 무게 / вес / 重 /  ;  d, datetime, ,8-12'
     ).get_params(
         sentence = 'My mass is 68.5kg on 2019-09-08',
         return_one_value = True
