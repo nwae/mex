@@ -323,6 +323,26 @@ class MatchExpression:
 
         return corrected_expressions_arr
 
+    def handle_length_range(
+            self,
+            value_left,
+            value_right,
+            # e.g. [2,5]
+            var_len_range
+    ):
+        if var_len_range and (type(value_left) is str):
+            if len(value_left) < var_len_range[0]:
+                value_left = None
+            elif len(value_left) > var_len_range[1]:
+                value_left = value_left[0:var_len_range[1]]
+        if var_len_range and (type(value_right) is str):
+            if len(value_right) < var_len_range[0]:
+                value_right = None
+            elif len(value_right) > var_len_range[1]:
+                value_right = value_right[0:var_len_range[1]]
+
+        return (value_left, value_right)
+
     #
     # Extract variables from string
     #
@@ -361,12 +381,6 @@ class MatchExpression:
                 data_type       = data_type,
                 left_or_right   = MatchExpression.TERM_LEFT
             )
-            # Put to None if length range not satisfied
-            if var_len_range and value_left:
-                if len(value_left) < var_len_range[0]:
-                    value_left = None
-                elif len(value_left) > var_len_range[1]:
-                    value_left = value_left[0:var_len_range[1]]
             value_right = self.get_var_value(
                 sentence        = sentence,
                 var_name        = var,
@@ -374,11 +388,6 @@ class MatchExpression:
                 data_type       = data_type,
                 left_or_right   = MatchExpression.TERM_RIGHT
             )
-            if var_len_range and value_right:
-                if len(value_right) < var_len_range[0]:
-                    value_right = None
-                elif len(value_right) > var_len_range[1]:
-                    value_right = value_right[0:var_len_range[1]]
 
             if value_left or value_right:
                 lg.Log.debug(
@@ -412,6 +421,16 @@ class MatchExpression:
                              + '" from sentence "' + str(sentence) \
                              + '". Exception ' + str(ex_int_conv) + '.'
                     lg.Log.warning(errmsg)
+
+            #
+            # Length Range Handling
+            #
+            # Put to None if length range not satisfied
+            var_values[var] = self.handle_length_range(
+                value_left    = var_values[var][0],
+                value_right   = var_values[var][1],
+                var_len_range = var_len_range
+            )
 
         lg.Log.debug(
             str(MatchExpression.__name__) + ' ' + str(getframeinfo(currentframe()).lineno) \
