@@ -99,7 +99,8 @@ In human level, the above says,
 ```<len_range>```
   is the length range of the variable. e.g. If "2-5", means if anything
   less than length 2, will return None, and if anything longer than 5, will
-  be truncated to length 5.
+  be truncated to length 5. If entered as "3", means a strict length 3 where
+  smaller lengths return None, longer than 3 returns truncated to 3-length.
   This option has no effect on non-string types like "int", "float".
 
 ```<prfdir>```
