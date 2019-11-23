@@ -57,7 +57,7 @@ For customization of your own data types, you may utilize the parameter
 ```map_vartype_to_regex``` in the constructor.
 
 
-### Language
+### Mex Language
 ```
   var_1  ;  var_2  ;  var_3  ..  var_n  ;  ..
 ```
