@@ -1,4 +1,4 @@
-# mex (Match EXpression)
+# Mex (Match EXpression)
 
 Human Level Description of extracting parameters from sentence without
 regular expression syntax.
