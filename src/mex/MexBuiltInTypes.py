@@ -16,7 +16,7 @@ class MexBuiltInTypes:
     # e.g. me@gmail.com
     MEX_TYPE_EMAIL = 'email'
     # e.g. https://google.com/folder/?param1=value1&param2=value2
-    MEX_TYPE_URL = 'url'
+    MEX_TYPE_URI = 'uri'
     # Any Latin string
     MEX_TYPE_STR_EN = 'str-en'
     # Any Chinese string
@@ -31,7 +31,7 @@ class MexBuiltInTypes:
     #
     # Regex Constants
     #
-    REGEX_URL = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^.,，。 ]'
+    REGEX_URI = '(http|ws|file)[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^.,，。 ]'
     USERNAME_CHARS = 'a-zA-Z0-9_.-'
     # These characters need to be bracketed if found in mex expressions
     COMMON_REGEX_CHARS = ('*', '+', '[', ']', '{', '}', '|', '$', '^')
@@ -168,12 +168,12 @@ class MexBuiltInTypes:
                     '([' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '[@][a-zA-Z0-9]+[.][a-zA-Z]+).*'
                 ]
             },
-            MexBuiltInTypes.MEX_TYPE_URL: {
+            MexBuiltInTypes.MEX_TYPE_URI: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*(' + MexBuiltInTypes.REGEX_URL + ')',
+                    '.*(' + MexBuiltInTypes.REGEX_URI + ')',
                     # Left of variable expression at the start of sentence
-                    '^(' + MexBuiltInTypes.REGEX_URL + ')'
+                    '^(' + MexBuiltInTypes.REGEX_URI + ')'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
                     # Right of non-empty variable expression
@@ -181,7 +181,7 @@ class MexBuiltInTypes:
                     # 'email@x.com' will be returned correctly on the left side but
                     # the right side will return 'l@x.com'.
                     # The user needs to choose the right one
-                    '(' + MexBuiltInTypes.REGEX_URL + ').*'
+                    '(' + MexBuiltInTypes.REGEX_URI + ').*'
                 ]
             },
             MexBuiltInTypes.MEX_TYPE_STR_EN: {

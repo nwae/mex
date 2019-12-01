@@ -135,7 +135,7 @@ class UnitTest:
             ]
         },
         {
-            'mex': 'x, url, ',
+            'mex': 'x, uri, ',
             'lang': None,
             'sentences': [
                 ('이름은 김미소 https://www.geeksforgeeks.org/python-check-url-string/ ok。',
@@ -143,8 +143,10 @@ class UnitTest:
                 ('이름은 김미소미소 ชื่อ กุ้งกุ้ง https://docs.google.com/document/d/1_fox_6_o/edit... 我叫是习近平近平。',
                  {'x': 'https://docs.google.com/document/d/1_fox_6_o/edit'}),
                 # Capital in URL will be lower cased. TODO Should be have option to return without to lower?
-                ('이름은 김미소미소 ชื่อ กุ้งกุ้ง https://docs.google.com/document/d/1xjmtu0PPLV8f9qkm_6_o/edit... 我叫是习近平近平。',
-                 {'x': 'https://docs.google.com/document/d/1xjmtu0pplv8f9qkm_6_o/edit'}),
+                ('이름은 김미소미소 ชื่อ กุ้งกุ้ง http://docs.google.com/document/d/1xjmtu0PPLV8f9qkm_6_o/edit... 我叫是习近平近平。',
+                 {'x': 'http://docs.google.com/document/d/1xjmtu0pplv8f9qkm_6_o/edit'}),
+                ('이름은 김미소미소 ชื่อ กุ้งกุ้ง file://docs.google.com/file/?param=iii_%20%60... 我叫是习近平近平。',
+                 {'x': 'file://docs.google.com/file/?param=iii_%20%60'}),
             ]
         }
     ]
