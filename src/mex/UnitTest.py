@@ -148,6 +148,16 @@ class UnitTest:
                 ('이름은 김미소미소 ชื่อ กุ้งกุ้ง file://docs.google.com/file/?param=iii_%20%60... 我叫是习近平近平。',
                  {'x': 'file://docs.google.com/file/?param=iii_%20%60'}),
             ]
+        },
+        {
+            # TODO This is super slow up to 5s WHY???
+            'mex': 'x, uri, url / uri / ==   ;   v, float, time / speed',
+            'lang': 'en',
+            'sentences': [
+                # TODO This is super slow up to 5s WHY???
+                #('speed 5.3s == https://staging-bot.com/all/?accid=4&txt=%E4%BB%80%E4%B9%88%20is%205kg%20in%20pounds? -',
+                # {'x': 'https://staging-bot.com/all/?accid=4&txt=%e4%bb%80%e4%b9%88%20is%205kg%20in%20pounds?', 'v': 5.3})
+            ]
         }
     ]
 
@@ -210,15 +220,17 @@ class UnitTest:
 
 if __name__ == '__main__':
     UnitTest.run_tests()
-
     exit (0)
+
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
     print(mexpr.MatchExpression(
+        lang = 'en',
         # pattern = 'm, float, ma-ss / 무게 / вес / 重 / ;  d, datetime, '
-        pattern = 'x, url, '
+        pattern = 'x, uri, url / uri / ==   ;   v, float, time / speed'
     ).get_params(
         # sentence = 'My ma-ss is 68.5kg on 2019-09-08',
-        sentence = '이름은 김미소 https://www.geeksforgeeks.org/python-check-url-string/ ok。',
+        # TODO This is super slow up to 5s WHY???
+        sentence = 'speed 5.3s == https://staging-bot.com/all/?accid=4&txt=%E4%BB%80%E4%B9%88%20is%205kg%20in%20pounds? -',
         return_one_value = True
     ))
 
