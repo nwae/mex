@@ -133,6 +133,19 @@ class UnitTest:
             'priority_direction': [
                 'right'
             ]
+        },
+        {
+            'mex': 'x, url, ',
+            'lang': None,
+            'sentences': [
+                ('이름은 김미소 https://www.geeksforgeeks.org/python-check-url-string/ ok。',
+                 {'x': 'https://www.geeksforgeeks.org/python-check-url-string/'}),
+                ('이름은 김미소미소 ชื่อ กุ้งกุ้ง https://docs.google.com/document/d/1_fox_6_o/edit... 我叫是习近平近平。',
+                 {'x': 'https://docs.google.com/document/d/1_fox_6_o/edit'}),
+                # Capital in URL will be lower cased. TODO Should be have option to return without to lower?
+                ('이름은 김미소미소 ชื่อ กุ้งกุ้ง https://docs.google.com/document/d/1xjmtu0PPLV8f9qkm_6_o/edit... 我叫是习近平近平。',
+                 {'x': 'https://docs.google.com/document/d/1xjmtu0pplv8f9qkm_6_o/edit'}),
+            ]
         }
     ]
 
@@ -173,7 +186,10 @@ class UnitTest:
                 )
                 if not params == expected_result:
                     n_fail += 1
-                    print('ERROR sentence "' + str(sent) + '", expect ' + str(expected_result) + ', got ' + str(params))
+                    print(
+                        'ERROR sentence "' + str(sent) + '",\n\r expect ' + str(expected_result)
+                        + ', \n\r got ' + str(params)
+                    )
                 else:
                     n_pass += 1
                     print('TEST OK ' + str(params))
@@ -196,9 +212,11 @@ if __name__ == '__main__':
     exit (0)
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
     print(mexpr.MatchExpression(
-        pattern = 'm, float, ma-ss / 무게 / вес / 重 / ;  d, datetime, '
+        # pattern = 'm, float, ma-ss / 무게 / вес / 重 / ;  d, datetime, '
+        pattern = 'x, url, '
     ).get_params(
-        sentence = 'My ma-ss is 68.5kg on 2019-09-08',
+        # sentence = 'My ma-ss is 68.5kg on 2019-09-08',
+        sentence = '이름은 김미소 https://www.geeksforgeeks.org/python-check-url-string/ ok。',
         return_one_value = True
     ))
 

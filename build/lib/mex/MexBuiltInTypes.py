@@ -15,6 +15,8 @@ class MexBuiltInTypes:
     MEX_TYPE_DATETIME = 'datetime'
     # e.g. me@gmail.com
     MEX_TYPE_EMAIL = 'email'
+    # e.g. https://google.com/folder/?param1=value1&param2=value2
+    MEX_TYPE_URL = 'url'
     # Any Latin string
     MEX_TYPE_STR_EN = 'str-en'
     # Any Chinese string
@@ -29,6 +31,7 @@ class MexBuiltInTypes:
     #
     # Regex Constants
     #
+    REGEX_URL = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^.,，。 ]'
     USERNAME_CHARS = 'a-zA-Z0-9_.-'
     # These characters need to be bracketed if found in mex expressions
     COMMON_REGEX_CHARS = ('*', '+', '[', ']', '{', '}', '|', '$', '^')
@@ -163,6 +166,22 @@ class MexBuiltInTypes:
                     # the right side will return 'l@x.com'.
                     # The user needs to choose the right one
                     '([' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '[@][a-zA-Z0-9]+[.][a-zA-Z]+).*'
+                ]
+            },
+            MexBuiltInTypes.MEX_TYPE_URL: {
+                MexBuiltInTypes.TERM_LEFT: [
+                    # Left of variable expression
+                    '.*(' + MexBuiltInTypes.REGEX_URL + ')',
+                    # Left of variable expression at the start of sentence
+                    '^(' + MexBuiltInTypes.REGEX_URL + ')'
+                ],
+                MexBuiltInTypes.TERM_RIGHT: [
+                    # Right of non-empty variable expression
+                    # Note that if given math expressions are nothing or '', then
+                    # 'email@x.com' will be returned correctly on the left side but
+                    # the right side will return 'l@x.com'.
+                    # The user needs to choose the right one
+                    '(' + MexBuiltInTypes.REGEX_URL + ').*'
                 ]
             },
             MexBuiltInTypes.MEX_TYPE_STR_EN: {
