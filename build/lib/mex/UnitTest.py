@@ -135,20 +135,44 @@ class UnitTest:
             ]
         },
         {
-            'mex': 'x, uri, ',
+            'mex': 'url, uri,   ;   x, float, x',
             'lang': None,
             'sentences': [
-                ('이름은 김미소 https://www.geeksforgeeks.org/python-check-url-string/ ok。',
-                 {'x': 'https://www.geeksforgeeks.org/python-check-url-string/'}),
-                ('이름은 김미소미소 ชื่อ กุ้งกุ้ง https://docs.google.com/document/d/1_fox_6_o/edit... 我叫是习近平近平。',
-                 {'x': 'https://docs.google.com/document/d/1_fox_6_o/edit'}),
+                ('이름은 김미소 https://www.geeksforgeeks.org/python-check-url-string/ ok。 x = 1.1?',
+                 {'x': 1.1, 'url': 'https://www.geeksforgeeks.org/python-check-url-string/'}),
+                ('이름은 김미소미소 ชื่อ กุ้งกุ้ง https://docs.google.com/document/d/1_fox_6_o/edit... 我叫是习近平近平。 x=2.2 !',
+                 {'x': 2.2, 'url': 'https://docs.google.com/document/d/1_fox_6_o/edit'}),
                 # Capital in URL will be lower cased. TODO Should be have option to return without to lower?
-                ('이름은 김미소미소 ชื่อ กุ้งกุ้ง http://docs.google.com/document/d/1xjmtu0PPLV8f9qkm_6_o/edit... 我叫是习近平近平。',
-                 {'x': 'http://docs.google.com/document/d/1xjmtu0pplv8f9qkm_6_o/edit'}),
-                ('이름은 김미소미소 ชื่อ กุ้งกุ้ง file://docs.google.com/file/?param=iii_%20%60... 我叫是习近平近平。',
-                 {'x': 'file://docs.google.com/file/?param=iii_%20%60'}),
+                # Also x should be 3.3 but there is a 'x1' string inside the url,
+                # which will cause left priority to be returned as 3.3 and not 1.0
+                ('이름은 김미소미소 ชื่อ กุ้งกุ้ง http://docs.google.com/document/d/x1jmtu0PPLV8f9qkm_6_o/edit... 我叫是习近平近平。 x=3.3;;',
+                 {'x': 3.3, 'url': 'http://docs.google.com/document/d/x1jmtu0pplv8f9qkm_6_o/edit'}),
+                ('이름은 김미소미소 ชื่อ กุ้งกุ้ง file://docs.google.com/file/?param=iii_%20%60... 我叫是习近平近平。x=4.4.',
+                 {'x': 4.4, 'url': 'file://docs.google.com/file/?param=iii_%20%60'}),
             ]
-        }
+        },
+        {
+            # TODO This is super slow up to 5s WHY???
+            'mex': 'x, uri, url / uri / ==   ;   v, float, time / speed',
+            'lang': 'en',
+            'sentences': [
+                # TODO This is super slow up to 5s WHY???
+                #('speed 5.3s == https://staging-bot.com/all/?accid=4&txt=%E4%BB%80%E4%B9%88%20is%205kg%20in%20pounds? -',
+                # {'x': 'https://staging-bot.com/all/?accid=4&txt=%e4%bb%80%e4%b9%88%20is%205kg%20in%20pounds?', 'v': 5.3})
+            ]
+        },
+        {
+            'mex': 'u, username, 用户名',
+            'lang': 'en',
+            'sentences': [
+                ('用户名nwae_c0d3_xx*.',
+                 {'u': 'nwae_c0d3_xx'}),
+                ('用户名=nwae_c0d3_xx$?*.',
+                 {'u': 'nwae_c0d3_xx'}),
+                ('用户名 nwae_c0d3_xx___!$?*.',
+                 {'u': 'nwae_c0d3_xx'}),
+            ]
+        },
     ]
 
     @staticmethod
@@ -210,15 +234,20 @@ class UnitTest:
 
 if __name__ == '__main__':
     UnitTest.run_tests()
-
     exit (0)
+
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
     print(mexpr.MatchExpression(
+        lang = 'en',
         # pattern = 'm, float, ma-ss / 무게 / вес / 重 / ;  d, datetime, '
-        pattern = 'x, url, '
+        # pattern = 'x, uri, url / uri / ==   ;   v, float, time / speed',
+        pattern = 'url, uri,   ;   x, float, x',
+        do_profiling = True
     ).get_params(
         # sentence = 'My ma-ss is 68.5kg on 2019-09-08',
-        sentence = '이름은 김미소 https://www.geeksforgeeks.org/python-check-url-string/ ok。',
+        # This is super slow up to 5s WHY??? re.match() will take very long because of our sentence.
+        # sentence = 'speed 5.3s == https://staging-bot.com/all/?accid=4&txt=%E4%BB%80%E4%B9%88%20is%205kg%20in%20pounds? -',
+        sentence = '이름은 김미소 https://www.geeksforgeeks.org/python-check-url-string/ ok。 x = 1.1?',
         return_one_value = True
     ))
 
