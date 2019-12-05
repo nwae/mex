@@ -45,10 +45,11 @@ class MexBuiltInTypes:
     # since the outer brace will be returned first in re.match()
     REGEX_URI = '(http|ws|file)[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^.,，。 ]'
     # Must have mix of character and number
+    USERNAME_DISALLOWED_END_PUNCTUATIONS = '`~.?;:!@#\$&+ \-\*\'"\(\)\[\]={}<>/\|，。\\\\'
     REGEX_USERNAME = \
-        '([a-zA-Z_]+[_.\-]*[0-9]+[a-zA-Z0-9_.\-]*[^.?;:!@#\$&+ \-\*，。])' + '|' \
-        + '([0-9_]+[_.\-]*[a-zA-Z]+[a-zA-Z0-9_.\-]*[^.?;:!@#\$&+ \-\*，。])' + '|' \
-        + '([a-zA-Z_]+[_.\-]*[a-zA-Z0-9_]*[^.?;:!@#\$&+ \-\*，。])'
+        '([a-zA-Z_]+[_.\-]*[0-9]+[a-zA-Z0-9_.\-]*[^' + USERNAME_DISALLOWED_END_PUNCTUATIONS + '])' + '|' \
+        + '([0-9_]+[_.\-]*[a-zA-Z]+[a-zA-Z0-9_.\-]*[^' + USERNAME_DISALLOWED_END_PUNCTUATIONS + '])' + '|' \
+        + '([a-zA-Z_]+[_.\-]*[a-zA-Z0-9_]*[^' + USERNAME_DISALLOWED_END_PUNCTUATIONS + '])'
 
     #
     # Language postfixes, for right side params
