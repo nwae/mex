@@ -167,16 +167,24 @@ class UnitTest:
             'sentences': [
                 ('用户名nwae_c0d3_xx*. 2019-01-01',
                  {'u': 'nwae_c0d3_xx', 'd': '2019-01-01'}),
+                # Should ignore all disallowed punctuations behind a username
                 ('用户名=nwae_c0d3_xx$?*. 2019-01-01',
                  {'u': 'nwae_c0d3_xx', 'd': '2019-01-01'}),
+                # Should ignore all disallowed punctuations behind a username
                 ('用户名 nwae_c0d3_xx___!$?*. 2019-01-01',
                  {'u': 'nwae_c0d3_xx___', 'd': '2019-01-01'}),
+                # Should ignore full stop
                 ('wo nwae_c0d3_xx___888. 用户名 2019-01-01',
                  {'u': 'nwae_c0d3_xx___888', 'd': '2019-01-01'}),
+                # Should ignore brackets
                 ('나는[nwae_c0d3_xx___888] 用户名 2019-01-01',
                  {'u': 'nwae_c0d3_xx___888', 'd': '2019-01-01'}),
+                # Should ignore quotes
                 ('나는 "nwae_c0d3_xx___888"!?   用户名    2019-01-01',
                  {'u': 'nwae_c0d3_xx___888', 'd': '2019-01-01'}),
+                # Simple username
+                ('나는 "nwae"!?   用户名    2019-01-01',
+                 {'u': 'nwae', 'd': '2019-01-01'}),
             ]
         },
     ]
