@@ -13,6 +13,7 @@ class MexBuiltInTypes:
     # e.g. 10:12:36, 12:15
     MEX_TYPE_TIME = 'time'
     MEX_TYPE_DATETIME = 'datetime'
+    MEX_TYPE_USERNAME = 'username'
     # e.g. me@gmail.com
     MEX_TYPE_EMAIL = 'email'
     # e.g. https://google.com/folder/?param1=value1&param2=value2
@@ -31,27 +32,39 @@ class MexBuiltInTypes:
     #
     # Regex Constants
     #
-    REGEX_URI = '(http|ws|file)[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^.,，。 ]'
-    USERNAME_CHARS = 'a-zA-Z0-9_.-'
+    USERNAME_CHARS = 'a-zA-Z0-9_.\-'
     # These characters need to be bracketed if found in mex expressions
     COMMON_REGEX_CHARS = ('*', '+', '[', ']', '{', '}', '|', '$', '^')
     CHARS_VIETNAMESE_LOWER = 'ăâàằầảẳẩãẵẫáắấạặậêèềẻểẽễéếẹệìỉĩíịôơòồờỏổởõỗỡóốớọộợưùừủửũữúứụựđýỳỷỹỵ'
     CHARS_VIETNAMESE = CHARS_VIETNAMESE_LOWER + CHARS_VIETNAMESE_LOWER.upper()
 
     #
+    # Regex Expressions
+    #
+    # There are internal braces '(', and ')' but this is not a problem
+    # since the outer brace will be returned first in re.match()
+    REGEX_URI = '(http|ws|file)[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^.,，。 ]'
+    # Must have mix of character and number
+    REGEX_USERNAME = \
+        '([a-zA-Z_]+[_.\-]*[0-9]+[a-zA-Z0-9_.\-]*[^.?;:!@#\$&+ \-\*，。])' + '|' \
+        + '([0-9_]+[_.\-]*[a-zA-Z]+[a-zA-Z0-9_.\-]*[^.?;:!@#\$&+ \-\*，。])' + '|' \
+        + '([a-zA-Z_]+[_.\-]*[a-zA-Z0-9_]*[^.?;:!@#\$&+ \-\*，。])'
+
+    #
     # Language postfixes, for right side params
     #
     COMMON_EXPRESSION_POSTFIXES = {
+        'all':   ['=', ' ='],
         'zh-cn': ['是'],
         'en':    [' is', ' are'],
         'ko':    ['는', '은', '가', '이'],
         'th':    ['คือ'],
         'vi':    [' là', ' la']
     }
-    ALL_EXPRESSION_POSTFIXES = []
-    for lang in COMMON_EXPRESSION_POSTFIXES.keys():
+    DEFAULT_EXPRESSION_POSTFIXES = []
+    for lang in ['all', 'en', 'zh-cn']:
         for w in COMMON_EXPRESSION_POSTFIXES[lang]:
-            ALL_EXPRESSION_POSTFIXES.append(w)
+            DEFAULT_EXPRESSION_POSTFIXES.append(w)
 
     TERM_LEFT = 'left'
     TERM_RIGHT = 'right'
@@ -150,6 +163,22 @@ class MexBuiltInTypes:
                     '([0-9]{4}[-]*[0-1][0-9][-*][0-3][0-9][ ]+[0-9]+[:][0-9]+).*',
                     # "yyyymmdd"". Right of non-empty variable expression
                     '([0-9]{4}[-]*[0-1][0-9][-*][0-3][0-9]).*',
+                ]
+            },
+            MexBuiltInTypes.MEX_TYPE_USERNAME: {
+                MexBuiltInTypes.TERM_LEFT: [
+                    # Left of variable expression
+                    '.*[^' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '(' + MexBuiltInTypes.REGEX_USERNAME + ').*',
+                    # Left of variable expression at the start of sentence
+                    '^(' + MexBuiltInTypes.REGEX_USERNAME + ')'
+                ],
+                MexBuiltInTypes.TERM_RIGHT: [
+                    # Right of non-empty variable expression
+                    # Note that if given math expressions are nothing or '', then
+                    # 'email@x.com' will be returned correctly on the left side but
+                    # the right side will return 'l@x.com'.
+                    # The user needs to choose the right one
+                    '(' + MexBuiltInTypes.REGEX_USERNAME + ').*'
                 ]
             },
             MexBuiltInTypes.MEX_TYPE_EMAIL: {

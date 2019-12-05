@@ -6,6 +6,7 @@ import re
 import nwae.utils.StringUtils as su
 import mex.MexBuiltInTypes as mexbuiltin
 import pandas as pd
+import nwae.utils.Profiling as prf
 
 
 #
@@ -44,12 +45,14 @@ class MatchExpression:
             pattern,
             map_vartype_to_regex = None,
             case_sensitive       = False,
-            lang                 = None
+            lang                 = None,
+            do_profiling         = False
     ):
         self.pattern = pattern
         self.case_sensitive = case_sensitive
         self.lang = lang
         self.map_vartype_to_regex = map_vartype_to_regex
+        self.do_profiling = do_profiling
         if self.map_vartype_to_regex is None:
             self.map_vartype_to_regex = mexbuiltin.MexBuiltInTypes.get_mex_built_in_types()
             lg.Log.debug(
@@ -245,9 +248,11 @@ class MatchExpression:
             # right side will return only 'l@gmail.com'
             #
             if ''.join(expressions_arr_raw) != '':
-                postfix_list_for_right_matching = mexbuiltin.MexBuiltInTypes.ALL_EXPRESSION_POSTFIXES
+                postfix_list_for_right_matching = mexbuiltin.MexBuiltInTypes.DEFAULT_EXPRESSION_POSTFIXES
                 if lang in mexbuiltin.MexBuiltInTypes.COMMON_EXPRESSION_POSTFIXES.keys():
-                    postfix_list_for_right_matching = mexbuiltin.MexBuiltInTypes.COMMON_EXPRESSION_POSTFIXES[lang]
+                    postfix_list_for_right_matching = \
+                        mexbuiltin.MexBuiltInTypes.COMMON_EXPRESSION_POSTFIXES['all'] + \
+                        mexbuiltin.MexBuiltInTypes.COMMON_EXPRESSION_POSTFIXES[lang]
                 for expr in expressions_arr_raw_no_postfix:
                     for postfix in postfix_list_for_right_matching:
                         expressions_arr_raw.append(expr + postfix)
@@ -527,7 +532,7 @@ class MatchExpression:
                 left_or_right   = left_or_right
             )
         except Exception as ex:
-            errmsg = str(MatchExpression.__class__) + ' ' + str(getframeinfo(currentframe()).lineno) \
+            errmsg = str(self.__class__) + ' ' + str(getframeinfo(currentframe()).lineno) \
                      + ': Exception "' + str(ex) \
                      + '" getting ' + str(left_or_right) + ' pattern list for var name "' + str(var_name) \
                      + '", sentence "' + str(sentence) + '", var expressions "' + str(var_expressions) \
@@ -535,11 +540,20 @@ class MatchExpression:
             lg.Log.error(errmsg)
             return None
 
+        a = prf.Profiling.start()
         m = self.get_var_value_regex(
             sentence      = sentence,
             patterns_list = patterns_list,
             var_name      = var_name
         )
+        if self.do_profiling:
+            lg.Log.info(
+                str(self.__class__) + ' ' + str(getframeinfo(currentframe()).lineno) \
+                + ': Get var value took '
+                + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5))
+                + ' secs. Var "' + str(var_name) + '", sentence "' + str(sentence)
+                + ', pattern list ' + str(patterns_list)
+            )
 
         group_position = 1
         if left_or_right == MatchExpression.TERM_RIGHT:
