@@ -170,7 +170,7 @@ class UnitTest:
                 ('用户名=nwae_c0d3_xx$?*.',
                  {'u': 'nwae_c0d3_xx'}),
                 ('用户名 nwae_c0d3_xx___!$?*.',
-                 {'u': 'nwae_c0d3_xx'}),
+                 {'u': 'nwae_c0d3_xx___'}),
             ]
         },
     ]
