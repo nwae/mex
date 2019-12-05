@@ -84,6 +84,7 @@ In human level, the above says,
    - number (string instead of integer and will not remove leading 0's)
    - time (12:30:55, 23:59)
    - datetime (20190322 23:59:11, 2019-03-22 23:59, 2019-03-22)
+   - username
    - email
    - url
    - str-en (any Latin string)
