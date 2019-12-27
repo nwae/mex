@@ -45,11 +45,13 @@ class MexBuiltInTypes:
     # since the outer brace will be returned first in re.match()
     REGEX_URI = '(http|ws|file)[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^.,，。 ]'
     # Must have mix of character and number
-    USERNAME_ALLOWED_END_CHARACTERS = 'a-zA-Z0-9_'
+    USERNAME_ALLOWED_START_END_CHARS = 'a-zA-Z0-9_'
     REGEX_USERNAME = \
-        '([a-zA-Z_]+[_.\-]*[0-9]+[a-zA-Z0-9_.\-]*[' + USERNAME_ALLOWED_END_CHARACTERS + ']+)' + '|' \
-        + '([0-9_]+[_.\-]*[a-zA-Z]+[a-zA-Z0-9_.\-]*[' + USERNAME_ALLOWED_END_CHARACTERS + ']+)' + '|' \
-        + '([a-zA-Z_]+[_.\-]*[a-zA-Z0-9_]*[' + USERNAME_ALLOWED_END_CHARACTERS + ']+)'
+        '([' + USERNAME_ALLOWED_START_END_CHARS + ']+[_.\-a-zA-Z0-9_]*[' + USERNAME_ALLOWED_START_END_CHARS + ']+)'
+    # Must have both characters and numbers
+    REGEX_USERNAME_CHARNUM = \
+        '([_]*[a-zA-Z]+[_.\-0-9]+[' + USERNAME_ALLOWED_START_END_CHARS + ']+)' + '|' \
+        + '([_]*[0-9]+[_.\-a-zA-Z]+[' + USERNAME_ALLOWED_START_END_CHARS + ']+)'
 
     #
     # Language postfixes, for right side params
