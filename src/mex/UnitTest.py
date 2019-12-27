@@ -185,6 +185,13 @@ class UnitTest:
                 # Simple username
                 ('나는 "nwae"!?   用户名    2019-01-01',
                  {'u': 'nwae', 'd': '2019-01-01'}),
+                ('用户名 my_username。',
+                 {'u': 'my_username', 'd': None}),
+                ('用户名geng.mahk_mahk123。',
+                 {'u': 'geng.mahk_mahk123', 'd': None}),
+                # 2 dots
+                ('用户名geng.mahk_mahk.123。',
+                 {'u': 'geng.mahk_mahk.123', 'd': None})
             ]
         },
     ]
