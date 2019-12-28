@@ -80,7 +80,9 @@ class UnitTest:
                 ('이멜은u_ser-name.me@gmail.com',
                  {'dt': None, 'email': 'u_ser-name.me@gmail.com', 'inc': None} ),
                 ('u_ser-name.me@gmail.invalid is my email',
-                 {'dt': None, 'email': 'u_ser-name.me@gmail.invalid', 'inc': None})
+                 {'dt': None, 'email': 'u_ser-name.me@gmail.invalid', 'inc': None}),
+                ('ok. 888_very.geng.mahk_mahk.123@gmail.invalid is my email',
+                 {'dt': None, 'email': '888_very.geng.mahk_mahk.123@gmail.invalid', 'inc': None}),
             ]
         },
         {
@@ -187,19 +189,29 @@ class UnitTest:
                  {'u': 'nwae', 'd': '2019-01-01'}),
                 ('用户名 my_username。',
                  {'u': 'my_username', 'd': None}),
+                # Not a username with '.' in front
+                ('用户名 .my_username。',
+                 {'u': None, 'd': None}),
+                ('用户名 my_user-name。',
+                 {'u': 'my_user-name', 'd': None}),
+                # Chinese dot should not be included
                 ('用户名geng.mahk_mahk123。',
                  {'u': 'geng.mahk_mahk123', 'd': None}),
                 # 2 dots
                 ('用户名geng.mahk_mahk.123。',
-                 {'u': 'geng.mahk_mahk.123', 'd': None})
+                 {'u': 'geng.mahk_mahk.123', 'd': None}),
+                # 888_very.geng.mahk_mahk.123
+                ('用户名 888_very.geng.mahk_mahk.123。',
+                 {'u': '888_very.geng.mahk_mahk.123', 'd': None}),
             ]
         },
     ]
 
     @staticmethod
-    def run_tests():
-        lg.Log.DEBUG_PRINT_ALL_TO_SCREEN = True
-        lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_IMPORTANT
+    def run_tests(
+            loglevel = lg.Log.LOG_LEVEL_IMPORTANT
+    ):
+        lg.Log.LOGLEVEL = loglevel
 
         import nwae.utils.Profiling as prf
 
@@ -233,28 +245,29 @@ class UnitTest:
                 )
                 if not params == expected_result:
                     n_fail += 1
-                    print(
+                    lg.Log.critical(
                         'ERROR sentence "' + str(sent) + '",\n\r expect ' + str(expected_result)
                         + ', \n\r got ' + str(params)
                     )
                 else:
                     n_pass += 1
-                    print('TEST OK ' + str(params))
+                    lg.Log.info('TEST OK ' + str(params))
                 interval_secs = prf.Profiling.get_time_dif(start=a, stop=prf.Profiling.stop(), decimals=5)
                 total_time += interval_secs
-                print('Took ' + str(interval_secs))
-        print('')
-        print('*** TEST PASS ' + str(n_pass) + ', FAIL ' + str(n_fail) + ' ***')
+                lg.Log.info('Took ' + str(interval_secs))
+
+        lg.Log.important('*** TEST PASS ' + str(n_pass) + ', FAIL ' + str(n_fail) + ' ***')
         rps = round((n_pass+n_fail)/total_time, 2)
         time_per_request = round(1000/rps, 2)
-        print('Result: ' + str(rps) + ' rps (requests per second), or ' + str(time_per_request) + 'ms per request')
+        lg.Log.important('Result: ' + str(rps) + ' rps (requests per second), or ' + str(time_per_request) + 'ms per request')
 
     def __init__(self):
         raise Exception('Instantiation not supported.')
 
 
 if __name__ == '__main__':
-    UnitTest.run_tests()
+    lg.Log.DEBUG_PRINT_ALL_TO_SCREEN = True
+    UnitTest.run_tests(loglevel=lg.Log.LOG_LEVEL_INFO)
     exit (0)
 
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
