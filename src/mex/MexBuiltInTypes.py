@@ -32,7 +32,8 @@ class MexBuiltInTypes:
     #
     # Regex Constants
     #
-    USERNAME_CHARS = 'a-zA-Z0-9_.\-'
+    USERNAME_CHARS                   = 'a-zA-Z0-9_.\-'
+    USERNAME_ALLOWED_START_END_CHARS = 'a-zA-Z0-9_'
     # These characters need to be bracketed if found in mex expressions
     COMMON_REGEX_CHARS = ('*', '+', '[', ']', '{', '}', '|', '$', '^')
     CHARS_VIETNAMESE_LOWER = 'ăâàằầảẳẩãẵẫáắấạặậêèềẻểẽễéếẹệìỉĩíịôơòồờỏổởõỗỡóốớọộợưùừủửũữúứụựđýỳỷỹỵ'
@@ -45,9 +46,8 @@ class MexBuiltInTypes:
     # since the outer brace will be returned first in re.match()
     REGEX_URI = '(http|ws|file)[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^.,，。 ]'
     # Must have mix of character and number
-    USERNAME_ALLOWED_START_END_CHARS = 'a-zA-Z0-9_'
     REGEX_USERNAME = \
-        '([' + USERNAME_ALLOWED_START_END_CHARS + ']+[_.\-a-zA-Z0-9_]*[' + USERNAME_ALLOWED_START_END_CHARS + ']+)'
+        '([' + USERNAME_ALLOWED_START_END_CHARS + ']+[' + USERNAME_CHARS + ']*[' + USERNAME_ALLOWED_START_END_CHARS + ']+)'
     # Must have both characters and numbers
     REGEX_USERNAME_CHARNUM = \
         '([_]*[a-zA-Z]+[_.\-0-9]+[' + USERNAME_ALLOWED_START_END_CHARS + ']+)' + '|' \
@@ -171,7 +171,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_USERNAME: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '(' + MexBuiltInTypes.REGEX_USERNAME + ').*',
+                    '.*[^' + MexBuiltInTypes.USERNAME_ALLOWED_START_END_CHARS + ']+' + '(' + MexBuiltInTypes.REGEX_USERNAME + ').*',
                     # Left of variable expression at the start of sentence
                     '^(' + MexBuiltInTypes.REGEX_USERNAME + ')'
                 ],
@@ -187,9 +187,9 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_EMAIL: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '([' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '[@][a-zA-Z0-9]+[.][a-zA-Z]+)',
+                    '.*[^' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '(' + MexBuiltInTypes.REGEX_USERNAME + '[@][a-zA-Z0-9]+[.][a-zA-Z]+)',
                     # Left of variable expression at the start of sentence
-                    '^([' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '[@][a-zA-Z0-9]+[.][a-zA-Z]+)'
+                    '^(' + MexBuiltInTypes.REGEX_USERNAME + '[@][a-zA-Z0-9]+[.][a-zA-Z]+)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
                     # Right of non-empty variable expression
@@ -197,7 +197,7 @@ class MexBuiltInTypes:
                     # 'email@x.com' will be returned correctly on the left side but
                     # the right side will return 'l@x.com'.
                     # The user needs to choose the right one
-                    '([' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '[@][a-zA-Z0-9]+[.][a-zA-Z]+).*'
+                    '(' + MexBuiltInTypes.REGEX_USERNAME + '[@][a-zA-Z0-9]+[.][a-zA-Z]+).*'
                 ]
             },
             MexBuiltInTypes.MEX_TYPE_URI: {
