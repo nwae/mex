@@ -203,6 +203,8 @@ class UnitTest:
                 # 888_very.geng.mahk_mahk.123
                 ('用户名 888_very.geng.mahk_mahk.123。',
                  {'u': '888_very.geng.mahk_mahk.123', 'd': None}),
+                ('用户名 li88jin_99.000__f8。',
+                 {'u': 'li88jin_99.000__f8', 'd': None}),
             ]
         },
     ]
