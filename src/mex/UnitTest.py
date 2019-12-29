@@ -194,6 +194,10 @@ class UnitTest:
                  {'u': None, 'd': None}),
                 ('用户名 my_user-name。',
                  {'u': 'my_user-name', 'd': None}),
+                ('用户名 my_user.name-ok。',
+                 {'u': 'my_user.name-ok', 'd': None}),
+                ('用户名 my_user.name-ok-1-2-3.o_k。',
+                 {'u': 'my_user.name-ok-1-2-3.o_k', 'd': None}),
                 # Chinese dot should not be included
                 ('用户名geng.mahk_mahk123。',
                  {'u': 'geng.mahk_mahk123', 'd': None}),
