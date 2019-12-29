@@ -52,8 +52,8 @@ class MexBuiltInTypes:
     # Must have both characters and numbers
     # Must have "greedy" matching using '*" in front and at the back
     REGEX_USERNAME_CHARNUM = \
-        '([' + USERNAME_ALLOWED_START_END_CHARS + ']*[a-zA-Z]+[0-9_.\-]+[' + USERNAME_ALLOWED_START_END_CHARS + ']+)' + '|' + \
-        '([' + USERNAME_ALLOWED_START_END_CHARS + ']*[0-9]+[a-zA-Z_.\-]+[' + USERNAME_ALLOWED_START_END_CHARS + ']+)'
+        '([a-zA-Z]+[0-9_.\-]+[' + USERNAME_CHARS + ']*[' + USERNAME_ALLOWED_START_END_CHARS + ']+)' + '|' + \
+        '([0-9]+[a-zA-Z_.\-]+[' + USERNAME_CHARS + ']*[' + USERNAME_ALLOWED_START_END_CHARS + ']+)'
 
     #
     # Language postfixes, for right side params
