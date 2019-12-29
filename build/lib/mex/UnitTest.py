@@ -203,6 +203,8 @@ class UnitTest:
                 # 888_very.geng.mahk_mahk.123
                 ('用户名 888_very.geng.mahk_mahk.123。',
                  {'u': '888_very.geng.mahk_mahk.123', 'd': None}),
+                ('用户名 li88jin_99.000__f8。',
+                 {'u': 'li88jin_99.000__f8', 'd': None}),
             ]
         },
     ]
@@ -267,7 +269,7 @@ class UnitTest:
 
 if __name__ == '__main__':
     lg.Log.DEBUG_PRINT_ALL_TO_SCREEN = True
-    UnitTest.run_tests(loglevel=lg.Log.LOG_LEVEL_INFO)
+    UnitTest.run_tests(loglevel=lg.Log.LOG_LEVEL_IMPORTANT)
     exit (0)
 
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2

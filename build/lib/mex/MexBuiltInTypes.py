@@ -46,12 +46,14 @@ class MexBuiltInTypes:
     # since the outer brace will be returned first in re.match()
     REGEX_URI = '(http|ws|file)[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^.,，。 ]'
     # Must have mix of character and number
+    # Must have "greedy" matching using '*" in front and at the back
     REGEX_USERNAME = \
         '([' + USERNAME_ALLOWED_START_END_CHARS + ']+[' + USERNAME_CHARS + ']*[' + USERNAME_ALLOWED_START_END_CHARS + ']+)'
     # Must have both characters and numbers
+    # Must have "greedy" matching using '*" in front and at the back
     REGEX_USERNAME_CHARNUM = \
-        '([_]*[a-zA-Z]+[_.\-0-9]+[' + USERNAME_ALLOWED_START_END_CHARS + ']+)' + '|' \
-        + '([_]*[0-9]+[_.\-a-zA-Z]+[' + USERNAME_ALLOWED_START_END_CHARS + ']+)'
+        '([' + USERNAME_ALLOWED_START_END_CHARS + ']*[a-zA-Z]+[0-9_.\-]+[' + USERNAME_ALLOWED_START_END_CHARS + ']+)' + '|' + \
+        '([' + USERNAME_ALLOWED_START_END_CHARS + ']*[0-9]+[a-zA-Z_.\-]+[' + USERNAME_ALLOWED_START_END_CHARS + ']+)'
 
     #
     # Language postfixes, for right side params
