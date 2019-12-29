@@ -269,7 +269,7 @@ class UnitTest:
 
 if __name__ == '__main__':
     lg.Log.DEBUG_PRINT_ALL_TO_SCREEN = True
-    UnitTest.run_tests(loglevel=lg.Log.LOG_LEVEL_INFO)
+    UnitTest.run_tests(loglevel=lg.Log.LOG_LEVEL_IMPORTANT)
     exit (0)
 
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
