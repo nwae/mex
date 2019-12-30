@@ -14,6 +14,7 @@ class MexBuiltInTypes:
     MEX_TYPE_TIME = 'time'
     MEX_TYPE_DATETIME = 'datetime'
     MEX_TYPE_USERNAME = 'username'
+    MEX_TYPE_USERNAME_NONWORD = 'username_nonword'
     # e.g. me@gmail.com
     MEX_TYPE_EMAIL = 'email'
     # e.g. https://google.com/folder/?param1=value1&param2=value2
@@ -32,8 +33,9 @@ class MexBuiltInTypes:
     #
     # Regex Constants
     #
-    USERNAME_CHARS                   = 'a-zA-Z0-9_.\-'
-    USERNAME_ALLOWED_START_END_CHARS = 'a-zA-Z0-9_'
+    USERNAME_CHARS               = 'a-zA-Z0-9_.\-'
+    USERNAME_ALLOWED_START_CHARS = 'a-zA-Z0-9'
+    USERNAME_ALLOWED_END_CHARS   = 'a-zA-Z0-9_'
     # These characters need to be bracketed if found in mex expressions
     COMMON_REGEX_CHARS = ('*', '+', '[', ']', '{', '}', '|', '$', '^')
     CHARS_VIETNAMESE_LOWER = 'ăâàằầảẳẩãẵẫáắấạặậêèềẻểẽễéếẹệìỉĩíịôơòồờỏổởõỗỡóốớọộợưùừủửũữúứụựđýỳỷỹỵ'
@@ -48,12 +50,12 @@ class MexBuiltInTypes:
     # Must have mix of character and number
     # Must have "greedy" matching using '*" in front and at the back
     REGEX_USERNAME = \
-        '([' + USERNAME_ALLOWED_START_END_CHARS + ']+[' + USERNAME_CHARS + ']*[' + USERNAME_ALLOWED_START_END_CHARS + ']+)'
-    # Must have both characters and numbers
+        '([' + USERNAME_ALLOWED_START_CHARS + ']+[' + USERNAME_CHARS + ']*[' + USERNAME_ALLOWED_END_CHARS + ']+)'
+    # Must have both characters and numbers/punctuations
     # Must have "greedy" matching using '*" in front and at the back
-    REGEX_USERNAME_CHARNUM = \
-        '([a-zA-Z]+[0-9_.\-]+[' + USERNAME_CHARS + ']*[' + USERNAME_ALLOWED_START_END_CHARS + ']+)' + '|' + \
-        '([0-9]+[a-zA-Z_.\-]+[' + USERNAME_CHARS + ']*[' + USERNAME_ALLOWED_START_END_CHARS + ']+)'
+    REGEX_USERNAME_NONWORD = \
+        '([a-zA-Z]+[0-9_.\-]+[' + USERNAME_CHARS + ']*[' + USERNAME_ALLOWED_END_CHARS + ']+)' + '|' + \
+        '([0-9]+[a-zA-Z_.\-]+[' + USERNAME_CHARS + ']*[' + USERNAME_ALLOWED_END_CHARS + ']+)'
 
     #
     # Language postfixes, for right side params
@@ -173,7 +175,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_USERNAME: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^' + MexBuiltInTypes.USERNAME_ALLOWED_START_END_CHARS + ']+' + '(' + MexBuiltInTypes.REGEX_USERNAME + ').*',
+                    '.*[^' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '(' + MexBuiltInTypes.REGEX_USERNAME + ').*',
                     # Left of variable expression at the start of sentence
                     '^(' + MexBuiltInTypes.REGEX_USERNAME + ')'
                 ],
@@ -184,6 +186,22 @@ class MexBuiltInTypes:
                     # the right side will return 'l@x.com'.
                     # The user needs to choose the right one
                     '(' + MexBuiltInTypes.REGEX_USERNAME + ').*'
+                ]
+            },
+            MexBuiltInTypes.MEX_TYPE_USERNAME_NONWORD: {
+                MexBuiltInTypes.TERM_LEFT: [
+                    # Left of variable expression
+                    '.*[^' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '(' + MexBuiltInTypes.REGEX_USERNAME_NONWORD + ').*',
+                    # Left of variable expression at the start of sentence
+                    '^(' + MexBuiltInTypes.REGEX_USERNAME_NONWORD + ')'
+                ],
+                MexBuiltInTypes.TERM_RIGHT: [
+                    # Right of non-empty variable expression
+                    # Note that if given math expressions are nothing or '', then
+                    # 'email@x.com' will be returned correctly on the left side but
+                    # the right side will return 'l@x.com'.
+                    # The user needs to choose the right one
+                    '(' + MexBuiltInTypes.REGEX_USERNAME_NONWORD + ').*'
                 ]
             },
             MexBuiltInTypes.MEX_TYPE_EMAIL: {
