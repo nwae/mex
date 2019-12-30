@@ -86,7 +86,7 @@ In human level, the above says,
    - datetime (20190322 23:59:11, 2019-03-22 23:59, 2019-03-22)
    - username
    - email
-   - url
+   - uri
    - str-en (any Latin string)
    - str-zh-cn (any simplified Chinese string)
    - str-ko (any Hangul string)
