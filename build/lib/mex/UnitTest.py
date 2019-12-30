@@ -175,6 +175,9 @@ class UnitTest:
                 # Should ignore all disallowed punctuations behind a username
                 ('用户名 nwae_c0d3_xx___!$?*. 2019-01-01',
                  {'u': 'nwae_c0d3_xx___', 'd': '2019-01-01'}),
+                # Username not allowed to start with '_'
+                ('用户名 _nwae_c0d3_xx___!$?*. 2019-01-01',
+                 {'u': None, 'd': '2019-01-01'}),
                 # Should ignore full stop
                 ('wo nwae_c0d3_xx___888. 用户名 2019-01-01',
                  {'u': 'nwae_c0d3_xx___888', 'd': '2019-01-01'}),
@@ -194,6 +197,64 @@ class UnitTest:
                  {'u': None, 'd': None}),
                 ('用户名 my_user-name。',
                  {'u': 'my_user-name', 'd': None}),
+                ('用户名 my_user.name-ok。',
+                 {'u': 'my_user.name-ok', 'd': None}),
+                ('用户名 my_user.name-ok-1-2-3.o_k。',
+                 {'u': 'my_user.name-ok-1-2-3.o_k', 'd': None}),
+                # Chinese dot should not be included
+                ('用户名geng.mahk_mahk123。',
+                 {'u': 'geng.mahk_mahk123', 'd': None}),
+                # 2 dots
+                ('用户名geng.mahk_mahk.123。',
+                 {'u': 'geng.mahk_mahk.123', 'd': None}),
+                # 888_very.geng.mahk_mahk.123
+                ('用户名 888_very.geng.mahk_mahk.123。',
+                 {'u': '888_very.geng.mahk_mahk.123', 'd': None}),
+                ('用户名 li88jin_99.000__f8。',
+                 {'u': 'li88jin_99.000__f8', 'd': None}),
+            ]
+        },
+        {
+            'mex': 'u, username_nonword, 用户名   ;   d, datetime, ',
+            'lang': 'en',
+            'sentences': [
+                # Not a username_nonword
+                ('나는 "nwae"!?   用户名..    2019-01-01',
+                 {'u': None, 'd': '2019-01-01'}),
+                # Not a username_nonword
+                ('나는 notusername.',
+                 {'u': None, 'd': None}),
+                ('用户名nwae_c0d3_xx*. 2019-01-01',
+                 {'u': 'nwae_c0d3_xx', 'd': '2019-01-01'}),
+                # Should ignore all disallowed punctuations behind a username
+                ('用户名=nwae_c0d3_xx$?*. 2019-01-01',
+                 {'u': 'nwae_c0d3_xx', 'd': '2019-01-01'}),
+                # Should ignore all disallowed punctuations behind a username
+                ('用户名 nwae_c0d3_xx___!$?*. 2019-01-01',
+                 {'u': 'nwae_c0d3_xx___', 'd': '2019-01-01'}),
+                # Username not allowed to start with '_'
+                ('用户名 _nwae_c0d3_xx___!$?*. 2019-01-01',
+                 {'u': None, 'd': '2019-01-01'}),
+                # Should ignore full stop
+                ('wo nwae_c0d3_xx___888. 用户名 2019-01-01',
+                 {'u': 'nwae_c0d3_xx___888', 'd': '2019-01-01'}),
+                # Should ignore brackets
+                ('나는[nwae_c0d3_xx___888] 用户名 2019-01-01',
+                 {'u': 'nwae_c0d3_xx___888', 'd': '2019-01-01'}),
+                # Should ignore quotes
+                ('나는 "nwae_c0d3_xx___888"!?   用户名    2019-01-01',
+                 {'u': 'nwae_c0d3_xx___888', 'd': '2019-01-01'}),
+                ('用户名 my_username。',
+                 {'u': 'my_username', 'd': None}),
+                # Not a username with '.' in front
+                ('用户名 .my_username。',
+                 {'u': None, 'd': None}),
+                ('用户名 my_user-name。',
+                 {'u': 'my_user-name', 'd': None}),
+                ('用户名 my_user.name-ok。',
+                 {'u': 'my_user.name-ok', 'd': None}),
+                ('用户名 my_user.name-ok-1-2-3.o_k。',
+                 {'u': 'my_user.name-ok-1-2-3.o_k', 'd': None}),
                 # Chinese dot should not be included
                 ('用户名geng.mahk_mahk123。',
                  {'u': 'geng.mahk_mahk123', 'd': None}),

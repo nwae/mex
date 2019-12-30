@@ -85,6 +85,7 @@ In human level, the above says,
    - time (12:30:55, 23:59)
    - datetime (20190322 23:59:11, 2019-03-22 23:59, 2019-03-22)
    - username
+   - username_nonword (include characters and number/punctuations)
    - email
    - uri
    - str-en (any Latin string)
