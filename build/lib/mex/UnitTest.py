@@ -3,9 +3,11 @@
 import nwae.utils.Log as lg
 from inspect import getframeinfo, currentframe
 import mex.MatchExpression as mexpr
+from nwae.utils.UnitTest import ResultObj
+import nwae.utils.Profiling as prf
 
 
-class UnitTest:
+class UnitTestMex:
 
     TESTS = [
         {
@@ -270,19 +272,17 @@ class UnitTest:
         },
     ]
 
-    @staticmethod
-    def run_tests(
-            loglevel = lg.Log.LOG_LEVEL_IMPORTANT
+    def __init__(self, config):
+        return
+
+    def run_unit_test(
+            self
     ):
-        lg.Log.LOGLEVEL = loglevel
-
-        import nwae.utils.Profiling as prf
-
         n_pass = 0
         n_fail = 0
         total_time = 0
 
-        for test in UnitTest.TESTS:
+        for test in UnitTestMex.TESTS:
             pattern = test['mex']
             lang = test['lang']
             sentences = test['sentences']
@@ -324,13 +324,13 @@ class UnitTest:
         time_per_request = round(1000/rps, 2)
         lg.Log.important('Result: ' + str(rps) + ' rps (requests per second), or ' + str(time_per_request) + 'ms per request')
 
-    def __init__(self):
-        raise Exception('Instantiation not supported.')
+        return ResultObj(count_ok=n_pass, count_fail=n_fail)
 
 
 if __name__ == '__main__':
     lg.Log.DEBUG_PRINT_ALL_TO_SCREEN = True
-    UnitTest.run_tests(loglevel=lg.Log.LOG_LEVEL_IMPORTANT)
+    lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_INFO
+    UnitTestMex(config=None).run_unit_test()
     exit (0)
 
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
