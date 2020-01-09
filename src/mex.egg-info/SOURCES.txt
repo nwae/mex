@@ -2,7 +2,7 @@ README.md
 src/mex/MatchExpression.py
 src/mex/MexAPI.py
 src/mex/MexBuiltInTypes.py
-src/mex/UnitTest.py
+src/mex/MexUnitTest.py
 src/mex.egg-info/PKG-INFO
 src/mex.egg-info/SOURCES.txt
 src/mex.egg-info/dependency_links.txt

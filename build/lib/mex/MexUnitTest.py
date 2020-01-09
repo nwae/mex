@@ -3,7 +3,7 @@
 import nwae.utils.Log as lg
 from inspect import getframeinfo, currentframe
 import mex.MatchExpression as mexpr
-from nwae.utils.UnitTest import ResultObj
+import  nwae.utils.UnitTest as ut
 import nwae.utils.Profiling as prf
 
 
@@ -278,8 +278,7 @@ class UnitTestMex:
     def run_unit_test(
             self
     ):
-        n_pass = 0
-        n_fail = 0
+        res_final = ut.ResultObj(count_ok=0, count_fail=0)
         total_time = 0
 
         for test in UnitTestMex.TESTS:
@@ -306,25 +305,21 @@ class UnitTestMex:
                     sentence=sent,
                     return_one_value=True
                 )
-                if not params == expected_result:
-                    n_fail += 1
-                    lg.Log.critical(
-                        'ERROR sentence "' + str(sent) + '",\n\r expect ' + str(expected_result)
-                        + ', \n\r got ' + str(params)
-                    )
-                else:
-                    n_pass += 1
-                    lg.Log.info('TEST OK ' + str(params))
+                res_final.update_bool(res_bool=ut.UnitTest.assert_true(
+                    observed = params,
+                    expected = expected_result,
+                    test_comment = 'test "' + str(sent) + '"'
+                ))
                 interval_secs = prf.Profiling.get_time_dif(start=a, stop=prf.Profiling.stop(), decimals=5)
                 total_time += interval_secs
                 lg.Log.info('Took ' + str(interval_secs))
 
-        lg.Log.important('*** TEST PASS ' + str(n_pass) + ', FAIL ' + str(n_fail) + ' ***')
-        rps = round((n_pass+n_fail)/total_time, 2)
+        lg.Log.important('*** TEST PASS ' + str(res_final.count_ok) + ', FAIL ' + str(res_final.count_fail) + ' ***')
+        rps = round((res_final.count_ok+res_final.count_fail)/total_time, 2)
         time_per_request = round(1000/rps, 2)
         lg.Log.important('Result: ' + str(rps) + ' rps (requests per second), or ' + str(time_per_request) + 'ms per request')
 
-        return ResultObj(count_ok=n_pass, count_fail=n_fail)
+        return res_final
 
 
 if __name__ == '__main__':
