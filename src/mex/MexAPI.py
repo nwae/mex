@@ -125,6 +125,7 @@ lg.Log.LOGFILE = cwd + 'logs/mex.log'
 print('Logs will be directed to log file (with date) "' + str(lg.Log.LOGFILE) + '"')
 if pv['gunicorn'] == '1':
     lg.Log.important('Starting Mex API with gunicorn from folder "' + str(cwd))
+    # Port and Host specified on command line already for gunicorn
 else:
     lg.Log.important('Starting Mex API without gunicorn from folder "' + str(cwd))
     mex_api.run_mex_api()
