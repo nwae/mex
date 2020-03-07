@@ -76,6 +76,12 @@ class MatchExpression:
         )
         return
 
+    def get_mex_var_names(
+            self
+    ):
+        return list(self.mex_obj_vars.keys())
+
+
     #
     # Extract from string encoding
     #   'm, float , mass / m   ;   c, float, light / speed'
