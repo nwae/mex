@@ -119,6 +119,32 @@ class UnitTestMex:
             ]
         },
         {
+            'mex': 'acc, account_number, 번호',
+            'lang': 'ko',
+            'sentences': [
+                # Normal number should work for account_number
+                ('2020-01-01: 번호 001122 계정은 9 월 23 일 10:12 에 1305.67 원, 잔액 9999.77.',
+                 {'acc': '001122'}),
+                # Standard test of some '-' characters
+                ('2020-01-01: 번호 11-22-33 계정은 9 월 23 일 10:12 에 1305.67 원, 잔액 9999.77.',
+                 {'acc': '11-22-33'}),
+                # Trailing '-' should be removed by end user, to simplify our regex
+                ('2020-01-01: 번호 22-33-44- 계정은 9 월 23 일 10:12 에 1305.67 원, 잔액 9999.77.',
+                 {'acc': '22-33-44-'}),
+                ('2020-01-01: 번호 33-44-55 계정은 9 월 23 일 10:12 에 1305.67 원, 잔액 9999.77.',
+                 {'acc': '33-44-55'}),
+                # Account number cannot start with '-'
+                ('2020-01-01: 번호 -333-444-555 계정은 9 월 23 일 10:12 에 1305.67 원, 잔액 9999.77.',
+                 {'acc': None}),
+                # Should capture account number, not the float number
+                ('2020-01-01: 44-55-66 번호 1305.67 원, 잔액 9999.77.',
+                 {'acc': '44-55-66'}),
+                # Should capture account number, trailing '-' is user problem
+                ('2020-01-01: 55-66-77- 번호 1305.67 원, 잔액 9999.77.',
+                 {'acc': '55-66-77-'}),
+            ]
+        },
+        {
             # Longer names come first
             # If we had put instead "이름 / 이름은", instead of detecting "김미소", it would return "은" instead
             # But because we do internal sorting already, this won't happen
@@ -324,7 +350,7 @@ class UnitTestMex:
 
 if __name__ == '__main__':
     lg.Log.DEBUG_PRINT_ALL_TO_SCREEN = True
-    lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_INFO
+    lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_IMPORTANT
     UnitTestMex(config=None).run_unit_test()
     exit (0)
 

@@ -10,6 +10,8 @@ class MexBuiltInTypes:
     MEX_TYPE_INT = 'int'
     # String format and will not remove leading 0's
     MEX_TYPE_NUMBER = 'number'
+    # Like number type and allow '-'
+    MEX_TYPE_ACCOUNT_NUMBER = 'account_number'
     # e.g. 10:12:36, 12:15
     MEX_TYPE_TIME = 'time'
     MEX_TYPE_DATETIME = 'datetime'
@@ -124,6 +126,18 @@ class MexBuiltInTypes:
                 MexBuiltInTypes.TERM_RIGHT: [
                     # Right of non-empty variable expression
                     '([+\-]*[0-9]+).*'
+                ]
+            },
+            MexBuiltInTypes.MEX_TYPE_ACCOUNT_NUMBER: {
+                MexBuiltInTypes.TERM_LEFT: [
+                    # Left of variable expression, with trailing '-' removed
+                    '.*[^0-9\-]+([0-9]+[0-9\-]*)',
+                    # Left of variable expression at the start of sentence, with trailing '-' removed
+                    '^([0-9]+[0-9\-]*)'
+                ],
+                MexBuiltInTypes.TERM_RIGHT: [
+                    # Right of non-empty variable expression
+                    '([0-9]+[0-9\-]*).*'
                 ]
             },
             MexBuiltInTypes.MEX_TYPE_TIME: {
