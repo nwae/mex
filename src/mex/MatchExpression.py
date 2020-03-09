@@ -81,6 +81,13 @@ class MatchExpression:
     ):
         return list(self.mex_obj_vars.keys())
 
+    def get_mex_var_type(
+            self,
+            var_name
+    ):
+        if var_name in self.mex_obj_vars:
+            return self.mex_obj_vars[var_name][MatchExpression.MEX_OBJECT_VARS_TYPE]
+        return None
 
     #
     # Extract from string encoding
