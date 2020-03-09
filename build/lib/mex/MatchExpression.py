@@ -89,6 +89,18 @@ class MatchExpression:
             return self.mex_obj_vars[var_name][MatchExpression.MEX_OBJECT_VARS_TYPE]
         return None
 
+    def get_mex_var_expressions(
+            self,
+            var_name,
+            side = 'left'
+    ):
+        if var_name in self.mex_obj_vars:
+            if side == 'left':
+                return self.mex_obj_vars[var_name][MatchExpression.MEX_OBJECT_VARS_EXPRESIONS_FOR_LEFT_MATCHING]
+            else:
+                return self.mex_obj_vars[var_name][MatchExpression.MEX_OBJECT_VARS_EXPRESIONS_FOR_RIGHT_MATCHING]
+        return None
+
     #
     # Extract from string encoding
     #   'm, float , mass / m   ;   c, float, light / speed'
