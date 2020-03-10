@@ -176,7 +176,7 @@ class UnitTestMex:
                 # Also x should be 3.3 but there is a 'x1' string inside the url,
                 # which will cause left priority to be returned as 3.3 and not 1.0
                 ('이름은 김미소미소 ชื่อ กุ้งกุ้ง http://docs.google.com/document/d/x1jmtu0PPLV8f9qkm_6_o/edit... 我叫是习近平近平。 x=3.3;;',
-                 {'x': 3.3, 'url': 'http://docs.google.com/document/d/x1jmtu0pplv8f9qkm_6_o/edit'}),
+                 {'x': 3.3, 'url': 'http://docs.google.com/document/d/x1jmtu0PPLV8f9qkm_6_o/edit'}),
                 ('이름은 김미소미소 ชื่อ กุ้งกุ้ง file://docs.google.com/file/?param=iii_%20%60... 我叫是习近平近平。x=4.4.',
                  {'x': 4.4, 'url': 'file://docs.google.com/file/?param=iii_%20%60'}),
             ]

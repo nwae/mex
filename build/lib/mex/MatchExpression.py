@@ -44,7 +44,7 @@ class MatchExpression:
             self,
             pattern,
             map_vartype_to_regex = None,
-            case_sensitive       = False,
+            case_sensitive       = True,
             lang                 = None,
             do_profiling         = False
     ):
