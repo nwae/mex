@@ -276,7 +276,6 @@ class MatchExpression:
                 postfix_list_for_right_matching = mexbuiltin.MexBuiltInTypes.DEFAULT_EXPRESSION_POSTFIXES
                 if lang in mexbuiltin.MexBuiltInTypes.COMMON_EXPRESSION_POSTFIXES.keys():
                     postfix_list_for_right_matching = \
-                        mexbuiltin.MexBuiltInTypes.COMMON_EXPRESSION_POSTFIXES['all'] + \
                         mexbuiltin.MexBuiltInTypes.COMMON_EXPRESSION_POSTFIXES[lang]
                 for expr in expressions_arr_raw_no_postfix:
                     for postfix in postfix_list_for_right_matching:
@@ -514,11 +513,15 @@ class MatchExpression:
             for pat in fix_list:
                 if left_or_right == MatchExpression.TERM_LEFT:
                     patterns_list.append(
-                        pat + '[ ]*(' + str(var_expressions) + ').*'
+                        pat + '[ '
+                        + mexbuiltin.MexBuiltInTypes.COMMON_VAR_QUOTE_CHARS
+                        + ']*(' + str(var_expressions) + ').*'
                     )
                 else:
                     patterns_list.append(
-                        '.*(' + var_expressions + ')[ ]*' + pat
+                        '.*(' + var_expressions + ')[ '
+                        + mexbuiltin.MexBuiltInTypes.COMMON_VAR_QUOTE_CHARS
+                        + ']*' + pat
                     )
             return patterns_list
         except Exception as ex:

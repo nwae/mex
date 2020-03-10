@@ -296,6 +296,23 @@ class UnitTestMex:
                  {'u': 'li88jin_99.000__f8', 'd': None}),
             ]
         },
+        {
+            'mex': 'n, str, name  ;  n_cn, str-zh-cn, 叫/名字  ;  n_ko, str-ko, 이름/나',
+            'lang': 'en',
+            'sentences': [
+                # Quotes for right match should have no effect
+                ('나 "이지은"!? name "Momo", 叫 "习近平"。',
+                 {'n': 'Momo' ,'n_ko': '이지은', 'n_cn': '习近平'}),
+                # Quotes for left match should have no effect
+                ('"이지은" 나, "Momo" name, "习近平"叫。',
+                 {'n': 'Momo', 'n_ko': '이지은', 'n_cn': '习近平'}),
+                # str type takes all languages, but not the others
+                ('나 Momo, name is 이지은, 叫 이지은。',
+                 {'n': '이지은', 'n_ko': None, 'n_cn': None}),
+                ('나=이지은, name = 이지은, 叫= 习近平。',
+                 {'n': '이지은', 'n_ko': '이지은', 'n_cn': '习近平'}),
+            ]
+        },
     ]
 
     def __init__(self, config):
@@ -352,9 +369,18 @@ if __name__ == '__main__':
     lg.Log.DEBUG_PRINT_ALL_TO_SCREEN = True
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_IMPORTANT
     UnitTestMex(config=None).run_unit_test()
-    exit (0)
+    exit(0)
 
     lg.Log.LOGLEVEL = lg.Log.LOG_LEVEL_DEBUG_2
+    print(mexpr.MatchExpression(
+        lang = None,
+        pattern = 'n, str, my name/name  ;  n_cn, str-zh-cn, 叫/名字  ;  n_ko, str-ko, 이름/나는/나/난'
+    ).get_params(
+        sentence = '나는 "뇌"!? my name is Momo, 叫 习近平。',
+        return_one_value = True
+    ))
+    exit(0)
+
     print(mexpr.MatchExpression(
         lang = 'en',
         # pattern = 'm, float, ma-ss / 무게 / вес / 重 / ;  d, datetime, '
