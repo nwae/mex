@@ -428,14 +428,22 @@ class MatchExpression:
                         raise Exception('Unrecognized type "' + str(data_type) + '".')
                     elif data_type == mexbuiltin.MexBuiltInTypes.MEX_TYPE_INT:
                         if value_left:
+                            # Remove commas
+                            value_left = re.sub(pattern=',', repl='', string=value_left)
                             value_left = int(value_left)
                         if value_right:
+                            # Remove commas
+                            value_right = re.sub(pattern=',', repl='', string=value_right)
                             value_right = int(value_right)
                         var_values[var] = (value_left, value_right)
                     elif data_type == mexbuiltin.MexBuiltInTypes.MEX_TYPE_FLOAT:
                         if value_left:
+                            # Remove commas
+                            value_left = re.sub(pattern=',', repl='', string=value_left)
                             value_left = float(value_left)
                         if value_right:
+                            # Remove commas
+                            value_right = re.sub(pattern=',', repl='', string=value_right)
                             value_right = float(value_right)
                         var_values[var] = (value_left, value_right)
                     else:
