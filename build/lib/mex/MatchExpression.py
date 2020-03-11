@@ -722,7 +722,7 @@ if __name__ == '__main__':
         # pattern = 'm, float, mass / 무게 / вес / 重 /  ;  d, datetime, ,8-12'
         pattern = 'm, float,  ;  d, datetime, ,8-12'
     ).get_params(
-        sentence = ' 99,888.77',
+        sentence = '"99,888.77"',
         return_one_value = True
     ))
     print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))

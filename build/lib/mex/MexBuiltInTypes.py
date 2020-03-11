@@ -91,12 +91,12 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_FLOAT: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # float type. Left of variable expression, End with xx.99, allow commas
-                    '.*[^0-9\-]+([+\-]*[0-9]+([,][0-9]{3})*[.][0-9]*)',
+                    '.*?[^0-9\-]+([+\-]*[0-9]+([,][0-9]{3})*[.][0-9]*)',
                     # float type. Left of variable expression at the start of sentence. End with xx.99, allow commas.
                     '^([+\-]*[0-9]+([,][0-9]{3})*[.][0-9]*)',
                     # float type must also support int type
                     # int type. Left of variable expression
-                    '.*[^0-9\-]+([+\-]*[0-9]+([,][0-9]{3})*)',
+                    '.*?[^0-9\-]+([+\-]*[0-9]+([,][0-9]{3})*)',
                     # int type. Left of variable expression at the start of sentence
                     '^([+\-]*[0-9]+([,][0-9]{3})*)'
                 ],
@@ -111,7 +111,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_INT: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^0-9\-]+([+\-]*[0-9]+)',
+                    '.*?[^0-9\-]+([+\-]*[0-9]+)',
                     # Left of variable expression at the start of sentence
                     '^([+\-]*[0-9]+)'
                 ],
@@ -123,7 +123,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_NUMBER: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^0-9\-]+([+\-]*[0-9]+)',
+                    '.*?[^0-9\-]+([+\-]*[0-9]+)',
                     # Left of variable expression at the start of sentence
                     '^([+\-]*[0-9]+)'
                 ],
@@ -135,7 +135,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_ACCOUNT_NUMBER: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression, with trailing '-' removed
-                    '.*[^0-9\-]+([0-9]+[0-9\-]*)',
+                    '.*?[^0-9\-]+([0-9]+[0-9\-]*)',
                     # Left of variable expression at the start of sentence, with trailing '-' removed
                     '^([0-9]+[0-9\-]*)'
                 ],
@@ -148,12 +148,12 @@ class MexBuiltInTypes:
                 MexBuiltInTypes.TERM_LEFT: [
                     # HHMMSS. Check this first
                     # HHMMSS. Left of variable expression
-                    '.*[^0-9]+([0-9]+[:][0-9]+[:][0-9]+)',
+                    '.*?[^0-9]+([0-9]+[:][0-9]+[:][0-9]+)',
                     # HHMMSS. Left of variable expression at the start of sentence
                     '^([0-9]+[:][0-9]+[:][0-9]+)',
                     # HHMM. Check this only after checking HHMMSS
                     # HHMM. Left of variable expression
-                    '.*[^0-9]+([0-9]+[:][0-9]+)',
+                    '.*?[^0-9]+([0-9]+[:][0-9]+)',
                     # HHMM. Left of variable expression at the start of sentence
                     '^([0-9]+[:][0-9]+)',
                 ],
@@ -168,16 +168,16 @@ class MexBuiltInTypes:
                 MexBuiltInTypes.TERM_LEFT: [
                     # "yyyymmdd HHMMSS". Check this first
                     # HHMMSS. Left of variable expression
-                    '.*[^0-9]+([0-9]{4}[-]*[0-1][0-9][-*][0-3][0-9][ ]+[0-9]+[:][0-9]+[:][0-9]+)',
+                    '.*?[^0-9]+([0-9]{4}[-]*[0-1][0-9][-*][0-3][0-9][ ]+[0-9]+[:][0-9]+[:][0-9]+)',
                     # "yyyymmdd HHMMSS". Left of variable expression at the start of sentence
                     '^([0-9]{4}[-]*[0-1][0-9][-]*[0-3][0-9][ ]+[0-9]+[:][0-9]+[:][0-9]+)',
                     # "yyyymmdd HHMM". Check this only after checking "yyyymmdd HHMMSS"
                     # "yyyymmdd HHMM". Left of variable expression
-                    '.*[^0-9]+([0-9]{4}[-]*[0-1][0-9][-]*[0-3][0-9][ ]+[0-9]+[:][0-9]+)',
+                    '.*?[^0-9]+([0-9]{4}[-]*[0-1][0-9][-]*[0-3][0-9][ ]+[0-9]+[:][0-9]+)',
                     # "yyyymmdd HHMM". Left of variable expression at the start of sentence
                     '^([0-9]{4}[-]*[0-1][0-9][-]*[0-3][0-9][ ]+[0-9]+[:][0-9]+)',
                     # "yyyymmdd". Left of variable expression
-                    '.*[^0-9]+([0-9]{4}[-]*[0-1][0-9][-]*[0-3][0-9])',
+                    '.*?[^0-9]+([0-9]{4}[-]*[0-1][0-9][-]*[0-3][0-9])',
                     # "yyyymmdd". Left of variable expression at the start of sentence
                     '^([0-9]{4}[-]*[0-1][0-9][-]*[0-3][0-9])',
                 ],
@@ -193,7 +193,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_USERNAME: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '(' + MexBuiltInTypes.REGEX_USERNAME + ').*',
+                    '.*?[^' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '(' + MexBuiltInTypes.REGEX_USERNAME + ').*',
                     # Left of variable expression at the start of sentence
                     '^(' + MexBuiltInTypes.REGEX_USERNAME + ')'
                 ],
@@ -209,7 +209,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_USERNAME_NONWORD: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '(' + MexBuiltInTypes.REGEX_USERNAME_NONWORD + ').*',
+                    '.*?[^' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '(' + MexBuiltInTypes.REGEX_USERNAME_NONWORD + ').*',
                     # Left of variable expression at the start of sentence
                     '^(' + MexBuiltInTypes.REGEX_USERNAME_NONWORD + ')'
                 ],
@@ -225,7 +225,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_EMAIL: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '(' + MexBuiltInTypes.REGEX_USERNAME + '[@][a-zA-Z0-9]+[.][a-zA-Z]+)',
+                    '.*?[^' + MexBuiltInTypes.USERNAME_CHARS + ']+' + '(' + MexBuiltInTypes.REGEX_USERNAME + '[@][a-zA-Z0-9]+[.][a-zA-Z]+)',
                     # Left of variable expression at the start of sentence
                     '^(' + MexBuiltInTypes.REGEX_USERNAME + '[@][a-zA-Z0-9]+[.][a-zA-Z]+)'
                 ],
@@ -241,7 +241,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_URI: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*(' + MexBuiltInTypes.REGEX_URI + ')',
+                    '.*?(' + MexBuiltInTypes.REGEX_URI + ')',
                     # Left of variable expression at the start of sentence
                     '^(' + MexBuiltInTypes.REGEX_URI + ')'
                 ],
@@ -257,7 +257,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_STR: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE
+                    '.*?[^a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE
                     + '\u4e00-\u9fff' + '\u1100-\u11ff\uac00-\ud7af' +'\u0e00-\u0e5b]+'
                     + '([a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE
                     +'\u4e00-\u9fff' + '\u1100-\u11ff\uac00-\ud7af' + '\u0e00-\u0e5b]+)',
@@ -274,7 +274,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_STR_EN: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^a-zA-Z]+([a-zA-Z]+)',
+                    '.*?[^a-zA-Z]+([a-zA-Z]+)',
                     # Left of variable expression at the start of sentence
                     '^([a-zA-Z]+)'
                 ],
@@ -286,7 +286,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_STR_CN: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^\u4e00-\u9fff]+([\u4e00-\u9fff]+)',
+                    '.*?[^\u4e00-\u9fff]+([\u4e00-\u9fff]+)',
                     # Left of variable expression at the start of sentence
                     '^([\u4e00-\u9fff]+)'
                 ],
@@ -298,7 +298,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_STR_KO: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^\u1100-\u11ff\uac00-\ud7af]+([\u1100-\u11ff\uac00-\ud7af]+)',
+                    '.*?[^\u1100-\u11ff\uac00-\ud7af]+([\u1100-\u11ff\uac00-\ud7af]+)',
                     # Left of variable expression at the start of sentence
                     '^([\u1100-\u11ff\uac00-\ud7af]+)'
                 ],
@@ -310,7 +310,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_STR_TH: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^\u0e00-\u0e5b]+([\u0e00-\u0e5b]+)',
+                    '.*?[^\u0e00-\u0e5b]+([\u0e00-\u0e5b]+)',
                     # Left of variable expression at the start of sentence
                     '^([\u0e00-\u0e5b]+)'
                 ],
@@ -322,7 +322,7 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_STR_VI: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*[^a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE + ']+([a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE + ']+)',
+                    '.*?[^a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE + ']+([a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE + ']+)',
                     # Left of variable expression at the start of sentence
                     '^([a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE + ']+)'
                 ],
