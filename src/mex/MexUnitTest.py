@@ -19,7 +19,9 @@ class UnitTestMex:
                 # float type should also work if entered integer
                 ('My mass is 68kg on 2019-09-08', {'m': 68.0, 'd': '2019-09-08'}),
                 # Must handle comma in float
-                ('My mass is 7,100.87 gram', {'m': 7100.87, 'd': None})
+                ('My mass is 7,100.87 gram', {'m': 7100.87, 'd': None}),
+                # Wrong comma positions in numbers, will take the first number
+                ('My mass is 7,10,0.87 gram', {'m': 7.0, 'd': None}),
             ]
         },
         {

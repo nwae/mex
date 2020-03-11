@@ -91,21 +91,21 @@ class MexBuiltInTypes:
             MexBuiltInTypes.MEX_TYPE_FLOAT: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # float type. Left of variable expression, End with xx.99, allow commas
-                    '.*[^0-9\-]+([+\-]*[0-9]+([,][0-9]+)*[.][0-9]*)',
+                    '.*[^0-9\-]+([+\-]*[0-9]+([,][0-9]{3})*[.][0-9]*)',
                     # float type. Left of variable expression at the start of sentence. End with xx.99, allow commas.
-                    '^([+\-]*[0-9]+([,][0-9]+)*[.][0-9]*)',
+                    '^([+\-]*[0-9]+([,][0-9]{3})*[.][0-9]*)',
                     # float type must also support int type
                     # int type. Left of variable expression
-                    '.*[^0-9\-]+([+\-]*[0-9]+([,][0-9]+)*)',
+                    '.*[^0-9\-]+([+\-]*[0-9]+([,][0-9]{3})*)',
                     # int type. Left of variable expression at the start of sentence
-                    '^([+\-]*[0-9]+([,][0-9]+)*)'
+                    '^([+\-]*[0-9]+([,][0-9]{3})*)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
                     # float type. Right of non-empty variable expression
-                    '([+\-]*[0-9]+([,][0-9]+)*[.][0-9]*).*',
+                    '([+\-]*[0-9]+([,][0-9]{3})*[.][0-9]*).*',
                     # float type must also support int type
                     # int type. Right of non-empty variable expression
-                    '([+\-]*[0-9]+([,][0-9]+)*).*'
+                    '([+\-]*[0-9]+([,][0-9]{3})*).*'
                 ]
             },
             MexBuiltInTypes.MEX_TYPE_INT: {
