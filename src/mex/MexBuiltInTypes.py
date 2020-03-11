@@ -6,9 +6,10 @@ from inspect import getframeinfo, currentframe
 
 class MexBuiltInTypes:
 
+    # Allow commas in float and int
     MEX_TYPE_FLOAT = 'float'
     MEX_TYPE_INT = 'int'
-    # String format and will not remove leading 0's
+    # String format and will not remove leading 0's, but no commas allowed
     MEX_TYPE_NUMBER = 'number'
     # Like number type and allow '-'
     MEX_TYPE_ACCOUNT_NUMBER = 'account_number'
@@ -89,22 +90,22 @@ class MexBuiltInTypes:
         return {
             MexBuiltInTypes.MEX_TYPE_FLOAT: {
                 MexBuiltInTypes.TERM_LEFT: [
-                    # float type. Left of variable expression
-                    '.*[^0-9\-]+([+\-]*[0-9]+[.][0-9]*)',
-                    # float type. Left of variable expression at the start of sentence
-                    '^([+\-]*[0-9]+[.][0-9]*)',
+                    # float type. Left of variable expression, End with xx.99, allow commas
+                    '.*[^0-9\-]+([+\-]*[0-9]+([,][0-9]+)*[.][0-9]*)',
+                    # float type. Left of variable expression at the start of sentence. End with xx.99, allow commas.
+                    '^([+\-]*[0-9]+([,][0-9]+)*[.][0-9]*)',
                     # float type must also support int type
                     # int type. Left of variable expression
-                    '.*[^0-9\-]+([+\-]*[0-9]+)',
+                    '.*[^0-9\-]+([+\-]*[0-9]+([,][0-9]+)*)',
                     # int type. Left of variable expression at the start of sentence
-                    '^([+\-]*[0-9]+)'
+                    '^([+\-]*[0-9]+([,][0-9]+)*)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
                     # float type. Right of non-empty variable expression
-                    '([+\-]*[0-9]+[.][0-9]*).*',
+                    '([+\-]*[0-9]+([,][0-9]+)*[.][0-9]*).*',
                     # float type must also support int type
                     # int type. Right of non-empty variable expression
-                    '([+\-]*[0-9]+).*'
+                    '([+\-]*[0-9]+([,][0-9]+)*).*'
                 ]
             },
             MexBuiltInTypes.MEX_TYPE_INT: {

@@ -18,6 +18,8 @@ class UnitTestMex:
                 ('My mass is 68.5kg on 2019-09-08', {'m': 68.5, 'd': '2019-09-08'}),
                 # float type should also work if entered integer
                 ('My mass is 68kg on 2019-09-08', {'m': 68.0, 'd': '2019-09-08'}),
+                # Must handle comma in float
+                ('My mass is 7,100.87 gram', {'m': 7100.87, 'd': None})
             ]
         },
         {
@@ -168,6 +170,9 @@ class UnitTestMex:
             'mex': 'url, uri,   ;   x, float, x',
             'lang': None,
             'sentences': [
+                # Must handle comma in float
+                ('이름은 김미소 https://www.geeksforgeeks.org/python-check-url-string/ ok。 x = 1,000,888.99?',
+                 {'x': 1000888.99, 'url': 'https://www.geeksforgeeks.org/python-check-url-string/'}),
                 ('이름은 김미소 https://www.geeksforgeeks.org/python-check-url-string/ ok。 x = 1.1?',
                  {'x': 1.1, 'url': 'https://www.geeksforgeeks.org/python-check-url-string/'}),
                 ('이름은 김미소미소 ชื่อ กุ้งกุ้ง https://docs.google.com/document/d/1_fox_6_o/edit... 我叫是习近平近平。 x=2.2 !',
