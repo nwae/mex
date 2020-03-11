@@ -537,6 +537,7 @@ class MatchExpression:
             )
             return None
 
+        possible_groups = []
         for pattern in patterns_list:
             m = re.match(pattern=pattern, string=sentence)
             if m:
@@ -545,8 +546,12 @@ class MatchExpression:
                     + ': For var "' + str(var_name) + '" using pattern "' + str(pattern)
                     + '", found groups ' + str(m.groups())
                 )
-                return m
-        return None
+                possible_groups.append(m)
+
+        for g in possible_groups:
+            lg.Log.debugdebug('Possible group: ' + str(g.groups()))
+
+        return possible_groups
 
     def get_pattern_list(
             self,
@@ -619,7 +624,7 @@ class MatchExpression:
             return None
 
         a = prf.Profiling.start()
-        m = self.get_var_value_regex(
+        possible_groups = self.get_var_value_regex(
             sentence      = sentence,
             patterns_list = patterns_list,
             var_name      = var_name
@@ -637,18 +642,34 @@ class MatchExpression:
         if left_or_right == MatchExpression.TERM_RIGHT:
             group_position = 2
 
-        if m:
-            if len(m.groups()) >= group_position:
-                return m.group(group_position)
-            else:
-                warn_msg = \
-                    str(MatchExpression.__class__) + ' ' + str(getframeinfo(currentframe()).lineno) \
-                    + ': For ' + str(left_or_right) + ' match, expected at least ' + str(group_position) \
-                    + ' match groups for var name "' + str(var_name) \
-                    + '", string "' + str(sentence) + '", var expressions "' + str(var_expressions) \
-                    + '", data type "' + str(data_type) + '" but got groups ' + str(m.groups()) + '.'
-                lg.Log.warning(warn_msg)
-        return None
+        best_group_value = None
+        if len(possible_groups) > 0:
+            # Use the longest one as the best
+            for m in possible_groups:
+                if len(m.groups()) < group_position:
+                    continue
+                m_value = m.group(group_position)
+                if m_value is not None:
+                    if best_group_value is None:
+                        best_group_value = m_value
+                    elif len(m_value) > len(best_group_value):
+                        best_group_value = m_value
+
+                lg.Log.debugdebug('Current best group value: ' + str(best_group_value))
+
+        return best_group_value
+        # if best_group:
+        #     if len(best_group.groups()) >= group_position:
+        #         return m.group(group_position)
+        #     else:
+        #         warn_msg = \
+        #             str(MatchExpression.__class__) + ' ' + str(getframeinfo(currentframe()).lineno) \
+        #             + ': For ' + str(left_or_right) + ' match, expected at least ' + str(group_position) \
+        #             + ' match groups for var name "' + str(var_name) \
+        #             + '", string "' + str(sentence) + '", var expressions "' + str(var_expressions) \
+        #             + '", data type "' + str(data_type) + '" but got groups ' + str(m.groups()) + '.'
+        #         lg.Log.warning(warn_msg)
+        # return None
 
     def get_params(
             self,
@@ -657,6 +678,8 @@ class MatchExpression:
     ):
         if not self.case_sensitive:
             sentence = str(sentence).lower()
+
+        sentence = su.StringUtils.trim(str(sentence))
 
         #
         # Extract variables from question
@@ -696,9 +719,10 @@ if __name__ == '__main__':
     import nwae.utils.Profiling as prf
     a = prf.Profiling.start()
     print(MatchExpression(
-        pattern = 'm, float, mass / 무게 / вес / 重 /  ;  d, datetime, ,8-12'
+        # pattern = 'm, float, mass / 무게 / вес / 重 /  ;  d, datetime, ,8-12'
+        pattern = 'm, float,  ;  d, datetime, ,8-12'
     ).get_params(
-        sentence = 'My mass is 68.5kg on 2019-09-08',
+        sentence = ' 99,888.77',
         return_one_value = True
     ))
     print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))

@@ -11,6 +11,19 @@ class UnitTestMex:
 
     TESTS = [
         {
+            # Allow to detect plain numbers
+            'mex': 'm, float,  ',
+            'lang': None,
+            'sentences': [
+                ('77999.88', {'m': 77999.88 }),
+                ('77,999.88', {'m': 77999.88}),
+                ('77,999.88?', {'m': 77999.88}),
+                # TODO Why Fail?
+                # ('"77,999.88"?', {'m': 77999.88}),
+                ('77,999,555.88', {'m': 77999555.88}),
+            ]
+        },
+        {
             # Trailing '/' in '...вес / 重 /' should be removed automatically
             'mex': 'm, float, mass / 무게 / вес / 重 / ;  d, datetime, ',
             'lang': None,
