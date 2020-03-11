@@ -24,6 +24,8 @@ import nwae.utils.Profiling as prf
 #
 class MatchExpression:
     MEX_OBJECT_VARS_TYPE = 'type'
+    # Original string description of the var expressions
+    MEX_OBJECT_VARS_EXPRESSIONS_ORIGINAL = 'expressions_original'
     MEX_OBJECT_VARS_EXPRESIONS_FOR_LEFT_MATCHING = 'expressions_for_left_matching'
     # This might come with postfixes (e.g. 'is') attached to expressions
     MEX_OBJECT_VARS_EXPRESIONS_FOR_RIGHT_MATCHING = 'expressions_for_right_matching'
@@ -39,6 +41,32 @@ class MatchExpression:
 
     TERM_LEFT = mexbuiltin.MexBuiltInTypes.TERM_LEFT
     TERM_RIGHT = mexbuiltin.MexBuiltInTypes.TERM_RIGHT
+
+    @staticmethod
+    def create_mex_obj_from_object_vars(
+            var_name_str,
+            var_type_str,
+            var_expressions_str,
+            var_len_range_list2,
+            var_preferred_dir_str
+    ):
+        var_len_range_str = ''
+        if var_len_range_list2 is not None:
+            var_len_range_str = str(var_len_range_list2[0]) + '-' + str(var_len_range_list2[1])
+
+        mex_pattern = \
+            var_name_str + MatchExpression.MEX_VAR_DESCRIPTION_SEPARATOR \
+            + var_type_str + MatchExpression.MEX_VAR_DESCRIPTION_SEPARATOR \
+            + var_expressions_str + MatchExpression.MEX_VAR_DESCRIPTION_SEPARATOR \
+            + var_len_range_str + MatchExpression.MEX_VAR_DESCRIPTION_SEPARATOR \
+            + var_preferred_dir_str
+        lg.Log.info(
+            str(__name__) + ' ' + str(getframeinfo(currentframe()).lineno)
+            + ': Creating new Mex object from description "' + str(mex_pattern) + '"'
+        )
+        return MatchExpression(
+            pattern = mex_pattern
+        )
 
     def __init__(
             self,
@@ -91,14 +119,26 @@ class MatchExpression:
 
     def get_mex_var_expressions(
             self,
-            var_name,
-            side = 'left'
+            var_name
     ):
         if var_name in self.mex_obj_vars:
-            if side == 'left':
-                return self.mex_obj_vars[var_name][MatchExpression.MEX_OBJECT_VARS_EXPRESIONS_FOR_LEFT_MATCHING]
-            else:
-                return self.mex_obj_vars[var_name][MatchExpression.MEX_OBJECT_VARS_EXPRESIONS_FOR_RIGHT_MATCHING]
+            return self.mex_obj_vars[var_name][MatchExpression.MEX_OBJECT_VARS_EXPRESSIONS_ORIGINAL]
+        return None
+
+    def get_mex_var_length_range(
+            self,
+            var_name
+    ):
+        if var_name in self.mex_obj_vars:
+            return self.mex_obj_vars[var_name][MatchExpression.MEX_OBJECT_VARS_LENGTH_RANGE]
+        return None
+
+    def get_mex_var_pref_dir(
+            self,
+            var_name
+    ):
+        if var_name in self.mex_obj_vars:
+            return self.mex_obj_vars[var_name][MatchExpression.MEX_OBJECT_VARS_PREFERRED_DIRECTION]
         return None
 
     #
@@ -207,6 +247,8 @@ class MatchExpression:
                 var_encoding[part_var_id] = {
                     # Extract 'float' from ['m','float','mass / m','left']
                     MatchExpression.MEX_OBJECT_VARS_TYPE: part_var_type,
+                    # Keep the original var expressions description in plain string
+                    MatchExpression.MEX_OBJECT_VARS_EXPRESSIONS_ORIGINAL: part_var_expressions,
                     # Extract ['mass','m'] from 'mass / m'
                     MatchExpression.MEX_OBJECT_VARS_EXPRESIONS_FOR_LEFT_MATCHING: expressions_arr_for_left_matching,
                     MatchExpression.MEX_OBJECT_VARS_EXPRESIONS_FOR_RIGHT_MATCHING: expressions_arr_for_right_matching,
