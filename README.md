@@ -80,7 +80,7 @@ In human level, the above says,
 ```<var_type>```
   can be
    - int
-   - float
+   - float (78.99, 1,600.55, 33,000, etc.)
    - number (string instead of integer and will not remove leading 0's)
    - account_numer (same as "number" type, but allow '-')
    - time (12:30:55, 23:59)
@@ -89,6 +89,7 @@ In human level, the above says,
    - username_nonword (include characters and number/punctuations)
    - email
    - uri
+   - str (any of the languages below)
    - str-en (any Latin string)
    - str-zh-cn (any simplified Chinese string)
    - str-ko (any Hangul string)
