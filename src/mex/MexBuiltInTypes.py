@@ -22,6 +22,7 @@ class MexBuiltInTypes:
     MEX_TYPE_EMAIL = 'email'
     # e.g. https://google.com/folder/?param1=value1&param2=value2
     MEX_TYPE_URI = 'uri'
+    MEX_TYPE_ANY = 'any'
     # Any string, include all languages below
     MEX_TYPE_STR = 'str'
     # Any Latin string
@@ -254,20 +255,37 @@ class MexBuiltInTypes:
                     '(' + MexBuiltInTypes.REGEX_URI + ').*'
                 ]
             },
-            MexBuiltInTypes.MEX_TYPE_STR: {
+            MexBuiltInTypes.MEX_TYPE_ANY: {
                 MexBuiltInTypes.TERM_LEFT: [
                     # Left of variable expression
-                    '.*?[^a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE
+                    '.*?[^a-zA-Z0-9_;:=|*.+\-' + MexBuiltInTypes.CHARS_VIETNAMESE
                     + '\u4e00-\u9fff' + '\u1100-\u11ff\uac00-\ud7af' +'\u0e00-\u0e5b]+'
-                    + '([a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE
+                    + '([a-zA-Z0-9_;:=|*.+\-' + MexBuiltInTypes.CHARS_VIETNAMESE
                     +'\u4e00-\u9fff' + '\u1100-\u11ff\uac00-\ud7af' + '\u0e00-\u0e5b]+)',
                     # Left of variable expression at the start of sentence
-                    '^([a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE
+                    '^([a-zA-Z0-9_;:=|*.+\-' + MexBuiltInTypes.CHARS_VIETNAMESE
                     + '\u4e00-\u9fff' + '\u1100-\u11ff\uac00-\ud7af' + '\u0e00-\u0e5b]+)'
                 ],
                 MexBuiltInTypes.TERM_RIGHT: [
                     # Right of non-empty variable expression
-                    '([a-zA-Z' + MexBuiltInTypes.CHARS_VIETNAMESE
+                    '([a-zA-Z0-9_;:=|*.+\-' + MexBuiltInTypes.CHARS_VIETNAMESE
+                    + '\u4e00-\u9fff' + '\u1100-\u11ff\uac00-\ud7af' + '\u0e00-\u0e5b]+).*'
+                ]
+            },
+            MexBuiltInTypes.MEX_TYPE_STR: {
+                MexBuiltInTypes.TERM_LEFT: [
+                    # Left of variable expression
+                    '.*?[^a-zA-Z_' + MexBuiltInTypes.CHARS_VIETNAMESE
+                    + '\u4e00-\u9fff' + '\u1100-\u11ff\uac00-\ud7af' +'\u0e00-\u0e5b]+'
+                    + '([a-zA-Z_' + MexBuiltInTypes.CHARS_VIETNAMESE
+                    +'\u4e00-\u9fff' + '\u1100-\u11ff\uac00-\ud7af' + '\u0e00-\u0e5b]+)',
+                    # Left of variable expression at the start of sentence
+                    '^([a-zA-Z_' + MexBuiltInTypes.CHARS_VIETNAMESE
+                    + '\u4e00-\u9fff' + '\u1100-\u11ff\uac00-\ud7af' + '\u0e00-\u0e5b]+)'
+                ],
+                MexBuiltInTypes.TERM_RIGHT: [
+                    # Right of non-empty variable expression
+                    '([a-zA-Z_' + MexBuiltInTypes.CHARS_VIETNAMESE
                     + '\u4e00-\u9fff' + '\u1100-\u11ff\uac00-\ud7af' + '\u0e00-\u0e5b]+).*'
                 ]
             },

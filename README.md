@@ -89,12 +89,13 @@ In human level, the above says,
    - username_nonword (include characters and number/punctuations)
    - email
    - uri
-   - str (any of the languages below)
-   - str-en (any Latin string)
-   - str-zh-cn (any simplified Chinese string)
-   - str-ko (any Hangul string)
-   - str-th (any Thai string)
-   - str-vi (any Vietnamese string)
+   - any (most accepted characters, but not space)
+   - str (any of the languages below, no space)
+   - str-en (any Latin string, no space)
+   - str-zh-cn (any simplified Chinese string, no space)
+   - str-ko (any Hangul string, no space)
+   - str-th (any Thai string, no space)
+   - str-vi (any Vietnamese string, no space)
    
 ```<expr_x>```
   is the word you expect to see before/after the parameter.

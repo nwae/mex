@@ -213,6 +213,18 @@ class UnitTestMex:
             ]
         },
         {
+            'mex': 'x, any, anyla / anything / ==   ;   v, float, time / speed',
+            'lang': None,
+            'sentences': [
+                ('dummy, anyla 用户名nwae_c0d3_xx*. 2019-01-01',
+                 {'x': '用户名nwae_c0d3_xx*.', 'v': None}),
+                ('dummy, anything 2019-01-01, ok',
+                 {'x': '2019-01-01', 'v': None}),
+                ('"2019-01-01==asdf|asdf" anything, ok',
+                 {'x': '2019-01-01==asdf|asdf', 'v': None}),
+            ]
+        },
+        {
             'mex': 'u, username, 用户名   ;   d, datetime, ',
             'lang': 'en',
             'sentences': [

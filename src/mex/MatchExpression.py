@@ -720,9 +720,9 @@ if __name__ == '__main__':
     a = prf.Profiling.start()
     print(MatchExpression(
         # pattern = 'm, float, mass / 무게 / вес / 重 /  ;  d, datetime, ,8-12'
-        pattern = 'm, float,  ;  d, datetime, ,8-12'
+        pattern = 'm, float,  ;  d, datetime, ,8-12  ; s, str, string,  ; a, any, anything/anyla'
     ).get_params(
-        sentence = '"99,888.77"',
+        sentence = '"99,888.77" , string "a_xxzz", anyla "-92+3_;m:d"',
         return_one_value = True
     ))
     print('Took ' + str(prf.Profiling.get_time_dif_str(start=a, stop=prf.Profiling.stop(), decimals=5)))
