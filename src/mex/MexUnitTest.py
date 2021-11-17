@@ -220,8 +220,8 @@ class UnitTestMex:
                  {'x': '用户名nwae_c0d3_xx*.', 'v': None}),
                 ('dummy, anything 2019-01-01, ok',
                  {'x': '2019-01-01', 'v': None}),
-                ('"2019-01-01==asdf|asdf" anything, ok',
-                 {'x': '2019-01-01==asdf|asdf', 'v': None}),
+                ('"2019-01-01==asdf|@asdf" anything, ok',
+                 {'x': '2019-01-01==asdf|@asdf', 'v': None}),
             ]
         },
         {
